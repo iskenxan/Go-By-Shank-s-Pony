@@ -1,0 +1,109 @@
+package com.sriley.gobyshankspony.model;
+
+
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.view.View;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.sriley.gobyshankspony.MainActivity;
+import com.sriley.gobyshankspony.R;
+import com.sriley.gobyshankspony.model.interfaces.GoogleSignInIntentListener;
+import com.sriley.gobyshankspony.model.interfaces.GoogleSignUpInfoRetrievedListener;
+
+public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, GoogleSignInIntentListener {
+
+    public static final int SIGN_UP_INTENT =0;
+    public static final int LOGIN_INTENT=1;
+
+
+    private GoogleSignInOptions mSignInOptions;
+    private GoogleApiClient mGoogleApiClient;
+    private GoogleSignUpInfoRetrievedListener mSignUpInfoRetrievedListener;
+
+
+    private SignInButton mSignInButton;
+    private MainActivity mActivity;
+
+
+    public GoogleSignInManager(SignInButton signInButton, MainActivity activity, GoogleSignUpInfoRetrievedListener listener){
+        mSignInButton=signInButton;
+        mSignUpInfoRetrievedListener=listener;
+        mActivity=activity;
+
+        mActivity.setGoogleSignInIntentListener(this);
+        setupGoogleApiClient();
+        mSignInButton.setSize(SignInButton.SIZE_STANDARD);
+        mSignInButton.setOnClickListener(this);
+    }
+
+
+
+    public void setupGoogleApiClient(){
+
+        String clientId=mActivity.getResources().getString(R.string.default_web_client_id);
+        mSignInOptions= new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(clientId)
+                .requestEmail().build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(mActivity).enableAutoManage( mActivity, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, mSignInOptions).build();
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        FirebaseManager.SignOut(mGoogleApiClient);
+        startSignInIntent();
+    }
+
+
+
+    private void startSignInIntent(){
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        mActivity.startActivityForResult(signInIntent, SIGN_UP_INTENT);
+    }
+
+
+    @Override
+    public void onSignInIntentReturn(GoogleSignInResult result, int requestCode) {
+        if(requestCode== SIGN_UP_INTENT){
+            handleSignUpIntentResult(result);
+        }
+    }
+
+
+    private void handleSignUpIntentResult(GoogleSignInResult result){
+        if (result.isSuccess()) {
+            GoogleSignInAccount userAccount = result.getSignInAccount();
+
+            mSignUpInfoRetrievedListener.onUserInfoRetrieved(userAccount);
+        }
+    }
+
+
+    private  User createUserFromAccount(GoogleSignInAccount account){
+        User user=new User();
+        user.setFirtName(account.getGivenName());
+        user.setLastName(account.getFamilyName());
+        user.setEmail(account.getEmail());
+
+        return user;
+    }
+
+
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+
+
+}

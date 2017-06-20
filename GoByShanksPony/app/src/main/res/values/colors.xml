@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="button_color">#529a97</color>
+    <color name="sign_up_button_color">#35b8b2</color>
+    <color name="temp_welcome_page_bg">#407977</color>
+    <color name="text_color">#164644</color>
+</resources>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "636686941883",
+    "firebase_url": "https://go-by-shanks-pony.firebaseio.com",
+    "project_id": "go-by-shanks-pony",
+    "storage_bucket": "go-by-shanks-pony.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636686941883:android:10062cb859012099",
+        "android_client_info": {
+          "package_name": "com.sriley.gobyshankspony"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "636686941883-15a9dc0ql9tprgj6rb7skv82utekcp11.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sriley.gobyshankspony",
+            "certificate_hash": "104d0ae97756ee6a3bd2fb9428d6a7cd5d58d5da"
+          }
+        },
+        {
+          "client_id": "636686941883-nc0hvsk7t563khja4fardn0bbnqlt0kv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa8s-DvbbKxh3rDdZI43sAuUyAd9sa2xk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "636686941883-nc0hvsk7t563khja4fardn0bbnqlt0kv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
