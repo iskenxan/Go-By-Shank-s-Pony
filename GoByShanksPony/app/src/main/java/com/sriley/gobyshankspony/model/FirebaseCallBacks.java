@@ -8,15 +8,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.sriley.gobyshankspony.model.interfaces.CheckIfUserExistsListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseSignUpCompleteListener;
 
 public class FirebaseCallBacks {
 
-    public static class OnUserSignUpCompleteCallBack implements OnCompleteListener<AuthResult>{
+    public static class OnGmailUserSignUpCompleteCallBack implements OnCompleteListener<AuthResult>{
 
         private FirebaseSignUpCompleteListener mListener;
 
-        public OnUserSignUpCompleteCallBack(FirebaseSignUpCompleteListener listener){
+        public OnGmailUserSignUpCompleteCallBack(FirebaseSignUpCompleteListener listener){
             mListener=listener;
         }
 
@@ -27,10 +31,10 @@ public class FirebaseCallBacks {
 
             if(task.isSuccessful()){
                 FirebaseUser currentUser=auth.getCurrentUser();
-                mListener.onUserSignUpComplete(currentUser);
+                mListener.onGmailUserSignInComplete(currentUser);
             }
         }
 
-
     }
+
 }

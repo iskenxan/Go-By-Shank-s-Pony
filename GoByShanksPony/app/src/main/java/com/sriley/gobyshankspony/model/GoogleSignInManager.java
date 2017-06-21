@@ -12,7 +12,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.firebase.auth.FirebaseAuth;
 import com.sriley.gobyshankspony.MainActivity;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignInIntentListener;
@@ -40,7 +39,11 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
 
         mActivity.setGoogleSignInIntentListener(this);
         setupGoogleApiClient();
-        mSignInButton.setSize(SignInButton.SIZE_STANDARD);
+        customizeSignInButton();
+    }
+
+    private void customizeSignInButton(){
+
         mSignInButton.setOnClickListener(this);
     }
 
@@ -57,9 +60,15 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
     }
 
 
+    public  void stopGoogleClient(){
+        mGoogleApiClient.stopAutoManage(mActivity);
+        mGoogleApiClient.disconnect();
+    }
+
+
     @Override
     public void onClick(View view) {
-        FirebaseManager.SignOut(mGoogleApiClient);
+        FirebaseManager.SignOutGmail(mGoogleApiClient);
         startSignInIntent();
     }
 
@@ -83,17 +92,17 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
         if (result.isSuccess()) {
             GoogleSignInAccount userAccount = result.getSignInAccount();
 
-            mSignUpInfoRetrievedListener.onUserInfoRetrieved(userAccount);
+            mSignUpInfoRetrievedListener.onGmailUserInfoRetrieved(userAccount);
         }
     }
 
 
-    private  User createUserFromAccount(GoogleSignInAccount account){
+    public  User createUserFromAccount(GoogleSignInAccount account){
         User user=new User();
         user.setFirtName(account.getGivenName());
         user.setLastName(account.getFamilyName());
         user.setEmail(account.getEmail());
-
+        user.setTokenId(account.getIdToken());
         return user;
     }
 

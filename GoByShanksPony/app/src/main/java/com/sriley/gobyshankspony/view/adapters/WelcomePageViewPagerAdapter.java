@@ -28,4 +28,6 @@ public class WelcomePageViewPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return 2;
     }
+
+
 }

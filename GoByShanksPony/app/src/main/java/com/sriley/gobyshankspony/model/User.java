@@ -6,7 +6,25 @@ public  class User {
     private String firtName;
     private String lastName;
     private String email;
+    private String tokenId;
+    private String userType;
 
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getTokenId() {
+        return tokenId;
+    }
+
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
+    }
 
     public String getFirtName() {
         return firtName;

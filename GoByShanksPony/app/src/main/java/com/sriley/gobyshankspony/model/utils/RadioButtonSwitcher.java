@@ -16,7 +16,7 @@ public class RadioButtonSwitcher implements CompoundButton.OnCheckedChangeListen
     }
 
     private RadioButton mBrokerRadioButton,mRenterRadioButton,mLandlordRadioButton;
-    private ButtonType mCurrentButtonType;
+    private ButtonType mCurrentButtonType=ButtonType.RENTERS;
 
 
     public RadioButtonSwitcher(RadioButton brokerButton,RadioButton renterButton,RadioButton landlordButton){
@@ -57,8 +57,21 @@ public class RadioButtonSwitcher implements CompoundButton.OnCheckedChangeListen
     }
 
 
+    public String getSelectedUserType(){
+        switch (mCurrentButtonType){
+            case RENTERS:
+                return "renter";
+            case BROCKERS:
+                return "brocker";
+            case LANDLORDS:
+                return "landlord";
+            default:
+                return "";
+        }
+    }
 
-    public ButtonType getCurrentCheckedButtonType(){
+
+    private ButtonType getCurrentCheckedButtonType(){
         return mCurrentButtonType;
     }
 

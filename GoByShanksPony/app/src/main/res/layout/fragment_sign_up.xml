@@ -69,7 +69,18 @@
             android:text="@string/common_signin_button_text_long"
             android:layout_centerHorizontal="true"
             android:layout_height="60dp" />
-    </LinearLayout>
 
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/SignUpFacebookSignUpbutton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="18sp"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"/>
+    </LinearLayout>
 
 </LinearLayout>

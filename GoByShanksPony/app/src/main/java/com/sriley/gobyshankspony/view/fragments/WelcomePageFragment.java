@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.view.adapters.WelcomePageViewPagerAdapter;
@@ -32,15 +33,34 @@ public class WelcomePageFragment extends Fragment {
 
         WelcomePageViewPagerAdapter viewPagerAdapter=new WelcomePageViewPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(viewPagerAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
-        View tabView=LayoutInflater.from(getContext()).inflate(R.layout.custom_viewpager_tab,null);
-        mTabLayout.getTabAt(0).setCustomView(tabView);
-        mTabLayout.getTabAt(1).setCustomView(tabView);
-
+        setupTabLayout();
 
 
         return view;
     }
+
+
+
+    private void setupTabLayout(){
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        View signUpTabView=getTabView("SIGN UP");
+        mTabLayout.getTabAt(0).setCustomView(signUpTabView);
+
+        View loginTabView=getTabView("LOGIN");
+        mTabLayout.getTabAt(1).setCustomView(loginTabView);
+    }
+
+
+
+    private View getTabView(String tabTitle){
+        View tabView=LayoutInflater.from(getContext()).inflate(R.layout.custom_viewpager_tab,null);
+        TextView textView= (TextView) tabView.findViewById(R.id.tabTextView);
+        textView.setText(tabTitle);
+
+        return tabView;
+    }
+
 
 
 }
