@@ -9,5 +9,5 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mainPlaceHolder"/>
+        android:id="@+id/mainWelcomePlaceHolder"/>
 </RelativeLayout>

@@ -4,6 +4,7 @@ package com.sriley.gobyshankspony.view.dialogs;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +25,17 @@ public class SignInErrorDialog extends DialogFragment implements View.OnClickLis
     private TextView mDialogMessage;
     private Button mCloseButton;
 
+
+    public static void displayDialog(FragmentManager fragmentManager){
+        SignInErrorDialog signInErrorDialog=SignInErrorDialog.newInstance(SignInErrorDialog.SIGN_UP_ERROR);
+        signInErrorDialog.show(fragmentManager,"error_dialog");
+    }
+
+
     public SignInErrorDialog() {
 
     }
+
 
     public static SignInErrorDialog newInstance(int errorType) {
         SignInErrorDialog frag = new SignInErrorDialog();
@@ -35,6 +44,7 @@ public class SignInErrorDialog extends DialogFragment implements View.OnClickLis
         frag.setArguments(args);
         return frag;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

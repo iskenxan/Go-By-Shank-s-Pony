@@ -12,25 +12,20 @@ import android.widget.RadioButton;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
-import com.google.firebase.auth.FirebaseUser;
 import com.sriley.gobyshankspony.ContentActivity;
 import com.sriley.gobyshankspony.model.FacebookSignInManager;
 import com.sriley.gobyshankspony.MainActivity;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.GoogleSignInManager;
 import com.sriley.gobyshankspony.model.User;
-import com.sriley.gobyshankspony.model.interfaces.CheckIfUserExistsListener;
-import com.sriley.gobyshankspony.model.interfaces.FirebaseSignUpCompleteListener;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignUpInfoRetrievedListener;
 import com.sriley.gobyshankspony.model.utils.RadioButtonSwitcher;
-import com.sriley.gobyshankspony.view.dialogs.SignInErrorDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class SignUpFragment extends Fragment implements GoogleSignUpInfoRetrievedListener,CheckIfUserExistsListener {
+public class SignUpFragment extends Fragment implements GoogleSignUpInfoRetrievedListener {
 
 
     private RadioButtonSwitcher mSignUpButtonsSwitcher;
@@ -73,24 +68,9 @@ public class SignUpFragment extends Fragment implements GoogleSignUpInfoRetrieve
 
     @Override
     public void onGmailUserInfoRetrieved(GoogleSignInAccount account) {
-        mUser=mGoogleSignInManager.createUserFromAccount(account);
-        mUser.setUserType(mSignUpButtonsSwitcher.getSelectedUserType());
-
-        FirebaseManager.SignUpUserToDataBase(mUser,this);
-    }
-
-
-    @Override
-    public void OnCheckIfUserExistsResult(boolean exists) {
-        if(!exists){
-            startContentActivity();
-        }
-        else{
-            SignInErrorDialog signInErrorDialog=SignInErrorDialog.newInstance(SignInErrorDialog.SIGN_UP_ERROR);
-            signInErrorDialog.show(getFragmentManager(),"error_dialog");
-        }
 
     }
+
 
 
 

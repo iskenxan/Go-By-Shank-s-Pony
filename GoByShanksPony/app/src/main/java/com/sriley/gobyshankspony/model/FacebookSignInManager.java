@@ -20,6 +20,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
 
 
 public class FacebookSignInManager implements FacebookCallback<LoginResult> {
@@ -59,10 +60,12 @@ public class FacebookSignInManager implements FacebookCallback<LoginResult> {
         handleFacebookAccessToken(loginResult.getAccessToken());
     }
 
+
     @Override
     public void onCancel() {
 
     }
+
 
     @Override
     public void onError(FacebookException error) {
@@ -71,19 +74,7 @@ public class FacebookSignInManager implements FacebookCallback<LoginResult> {
 
 
     private void handleFacebookAccessToken(AccessToken token) {
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(mFragment.getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            String name=user.getDisplayName();
-                            String email=user.getEmail();
-                        }
-                    }
-
-                });
+        FirebaseManager.signInWithFacebook(token.getToken(), (FirebaseAuthenticationListener) mFragment);
     }
 
 

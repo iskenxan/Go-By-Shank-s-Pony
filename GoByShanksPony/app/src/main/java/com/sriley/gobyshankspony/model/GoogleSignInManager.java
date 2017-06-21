@@ -4,6 +4,7 @@ package com.sriley.gobyshankspony.model;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -20,7 +21,6 @@ import com.sriley.gobyshankspony.model.interfaces.GoogleSignUpInfoRetrievedListe
 public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, GoogleSignInIntentListener {
 
     public static final int SIGN_UP_INTENT =0;
-    public static final int LOGIN_INTENT=1;
 
 
     private GoogleSignInOptions mSignInOptions;
@@ -42,7 +42,10 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
         customizeSignInButton();
     }
 
+
     private void customizeSignInButton(){
+        TextView textView= (TextView) mSignInButton.getChildAt(0);
+        textView.setTextSize(18);
 
         mSignInButton.setOnClickListener(this);
     }
@@ -94,16 +97,6 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
 
             mSignUpInfoRetrievedListener.onGmailUserInfoRetrieved(userAccount);
         }
-    }
-
-
-    public  User createUserFromAccount(GoogleSignInAccount account){
-        User user=new User();
-        user.setFirtName(account.getGivenName());
-        user.setLastName(account.getFamilyName());
-        user.setEmail(account.getEmail());
-        user.setTokenId(account.getIdToken());
-        return user;
     }
 
 

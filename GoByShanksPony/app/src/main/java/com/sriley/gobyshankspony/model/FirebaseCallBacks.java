@@ -11,16 +11,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.sriley.gobyshankspony.model.interfaces.CheckIfUserExistsListener;
-import com.sriley.gobyshankspony.model.interfaces.FirebaseSignUpCompleteListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
 
 public class FirebaseCallBacks {
 
-    public static class OnGmailUserSignUpCompleteCallBack implements OnCompleteListener<AuthResult>{
+    public static class onFirebaseSignUpCompleteListener implements OnCompleteListener<AuthResult>{
 
-        private FirebaseSignUpCompleteListener mListener;
+        private FirebaseAuthenticationListener mListener;
 
-        public OnGmailUserSignUpCompleteCallBack(FirebaseSignUpCompleteListener listener){
+        public onFirebaseSignUpCompleteListener(FirebaseAuthenticationListener listener){
             mListener=listener;
         }
 
@@ -30,11 +29,39 @@ public class FirebaseCallBacks {
             final FirebaseAuth auth= FirebaseAuth.getInstance();
 
             if(task.isSuccessful()){
-                FirebaseUser currentUser=auth.getCurrentUser();
-                mListener.onGmailUserSignInComplete(currentUser);
+                mListener.onAuthenticationComplete(true);
+            }
+            else
+                mListener.onAuthenticationComplete(false);
+        }
+
+    }
+
+
+
+    public static class onCheckIfUserExistsCallBack implements ValueEventListener{
+
+
+        private User mUser;
+
+        public onCheckIfUserExistsCallBack(User user){
+            mUser=user;
+        }
+
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if (dataSnapshot.getValue() == null) {
+                FirebaseManager.saveUserDetails(mUser);
             }
         }
 
+
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
     }
 
 }
