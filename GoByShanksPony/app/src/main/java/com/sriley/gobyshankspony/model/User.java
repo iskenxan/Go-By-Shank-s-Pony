@@ -3,8 +3,7 @@ package com.sriley.gobyshankspony.model;
 
 
 public  class User {
-    private String firtName;
-    private String lastName;
+    private String fullName;
     private String email;
     private String tokenId;
     private String userType;
@@ -26,20 +25,12 @@ public  class User {
         this.tokenId = tokenId;
     }
 
-    public String getFirtName() {
-        return firtName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirtName(String firtName) {
-        this.firtName = firtName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {

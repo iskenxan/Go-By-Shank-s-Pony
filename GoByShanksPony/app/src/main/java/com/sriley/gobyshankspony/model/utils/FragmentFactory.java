@@ -1,11 +1,14 @@
-package com.sriley.gobyshankspony.model;
+package com.sriley.gobyshankspony.model.utils;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sriley.gobyshankspony.R;
+import com.sriley.gobyshankspony.view.fragments.SearchResultFragment;
+import com.sriley.gobyshankspony.view.fragments.SelectApartmentTypeFragment;
 import com.sriley.gobyshankspony.view.fragments.SelectUserTypeFragment;
 import com.sriley.gobyshankspony.view.fragments.WelcomePageFragment;
 
@@ -23,6 +26,20 @@ public class FragmentFactory {
         beginContentActivityFragmentTransaction(activity,selectUserTypeFragment);
     }
 
+    public static void startSelectApartmentTypeFragment(AppCompatActivity activity){
+        SelectApartmentTypeFragment fragment=new SelectApartmentTypeFragment();
+        beginContentActivityFragmentTransaction(activity,fragment);
+    }
+
+    public static void startSearchResultFragment(AppCompatActivity activity,int apartmentType){
+        SearchResultFragment searchResultFragment=new SearchResultFragment();
+
+        Bundle args=new Bundle();
+        args.putInt(SearchResultFragment.APARTMENT_TYPE_ARGS,apartmentType);
+        searchResultFragment.setArguments(args);
+
+        beginContentActivityFragmentTransaction(activity,searchResultFragment);
+    }
 
     private static void beginContentActivityFragmentTransaction(AppCompatActivity activity,Fragment fragment){
         FragmentManager fragmentManager=activity.getSupportFragmentManager();

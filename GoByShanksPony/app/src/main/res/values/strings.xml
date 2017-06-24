@@ -5,4 +5,15 @@
 
     <string name="facebook_app_id">1663816860593538</string>
     <string name="fb_login_protocol_scheme">fb1663816860593538</string>
+
+    <string
+        name="foursquare_api_search_url">https://api.foursquare.com/v2/venues/search?ll=LATITUDE,LONGITUDE&amp;alt=ALTITUDE&amp;categoryId=4e67e38e036454776db1fb3a&amp;client_id=ONNDCCUPBDS5FNT3P3IQF40UZLSNI2L4T5SHJDWW2JXLD4AR&amp;client_secret=HHCMWCT0BFYIX52KOXYLDMZMUPHI0FJCWSDD3GY1OS3K5V42&amp;v=YEARMONTHDAY</string>
+
+    <string
+        name="zillow_zipid_api_url">http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz1fvgmd9hs0b_aui2x&amp;rentzestimate=true&amp;address=ADDRESS&amp;citystatezip=CITY,STATE</string>
+
+    <string
+        name="zillow_request_api_url">http://www.zillow.com/webservice/GetDeepComps.htm?zws-id=X1-ZWz1fvgmd9hs0b_aui2x&amp;zpid=ZIPID&amp;rentzestimate=true&amp;count=2</string>
+    <string
+        name="zillow_property_details_url">http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm?zws-id=X1-ZWz1fvgmd9hs0b_aui2x&amp;zpid=ZPID</string>
 </resources>

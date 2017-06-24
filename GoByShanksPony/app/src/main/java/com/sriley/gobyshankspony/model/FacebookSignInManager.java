@@ -21,6 +21,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
+import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
 
 
 public class FacebookSignInManager implements FacebookCallback<LoginResult> {
@@ -32,13 +33,16 @@ public class FacebookSignInManager implements FacebookCallback<LoginResult> {
     private Fragment mFragment;
     private CallbackManager mCallbackManager;
     FirebaseAuth mAuth;
+    private ProgressBarDialog mProgressBarDialog;
 
-    public FacebookSignInManager(LoginButton facebookLoginButton, Fragment fragment){
+
+    public FacebookSignInManager(LoginButton facebookLoginButton, Fragment fragment, ProgressBarDialog progressBarDialog){
         LoginManager.getInstance().logOut();
         mFragment=fragment;
         mCallbackManager=CallbackManager.Factory.create();
         mAuth=FirebaseAuth.getInstance();
 
+        mProgressBarDialog=progressBarDialog;
         mLoginButton=facebookLoginButton;
         mLoginButton.setReadPermissions("email","public_profile");
         mLoginButton.setFragment(mFragment);
@@ -74,6 +78,8 @@ public class FacebookSignInManager implements FacebookCallback<LoginResult> {
 
 
     private void handleFacebookAccessToken(AccessToken token) {
+        mProgressBarDialog=new ProgressBarDialog();
+        mProgressBarDialog.show(mFragment.getFragmentManager(),"progress_bar");
         FirebaseManager.signInWithFacebook(token.getToken(), (FirebaseAuthenticationListener) mFragment);
     }
 

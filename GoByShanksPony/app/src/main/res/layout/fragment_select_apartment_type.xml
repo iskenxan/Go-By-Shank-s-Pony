@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Select Apartment Type"
+        android:gravity="center"
+        android:textColor="@color/text_color"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"/>
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/ApartmentTypeViewPager"
+        android:layout_weight="1"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/button_color"
+        android:text="NEXT"
+        android:id="@+id/searchApartmentButton"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"/>
+
+</LinearLayout>

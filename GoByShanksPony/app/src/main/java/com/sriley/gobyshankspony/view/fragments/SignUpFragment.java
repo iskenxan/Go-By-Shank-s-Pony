@@ -49,7 +49,6 @@ public class SignUpFragment extends Fragment implements GoogleSignUpInfoRetrieve
         ButterKnife.bind(this,view);
 
         mSignUpButtonsSwitcher=new RadioButtonSwitcher(mBrokersRadioButton,mRentersRadioButton,mLandlordRadioButton);
-        mFacebookSignInManager=new FacebookSignInManager(mFacebookSignUpButton,this);
 
 
         return view;
@@ -83,7 +82,6 @@ public class SignUpFragment extends Fragment implements GoogleSignUpInfoRetrieve
     @Override
     public void onResume() {
         super.onResume();
-        mGoogleSignInManager=new GoogleSignInManager(mGoogleSignInButton, (MainActivity) getActivity(),this);
 
     }
 

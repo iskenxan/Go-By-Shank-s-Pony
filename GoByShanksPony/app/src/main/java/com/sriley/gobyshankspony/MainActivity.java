@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.sriley.gobyshankspony.model.FragmentFactory;
+import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.model.GoogleSignInManager;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignInIntentListener;
 

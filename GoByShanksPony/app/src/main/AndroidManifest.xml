@@ -3,6 +3,8 @@
           package="com.sriley.gobyshankspony">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:name=".MyApplication"
@@ -13,6 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/NoActionbarAppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -41,7 +44,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ContentActivity">
+        <activity android:name=".ContentActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

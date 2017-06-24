@@ -17,6 +17,7 @@ import com.sriley.gobyshankspony.MainActivity;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignInIntentListener;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignUpInfoRetrievedListener;
+import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
 
 public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, GoogleSignInIntentListener {
 
@@ -27,16 +28,19 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
     private GoogleApiClient mGoogleApiClient;
     private GoogleSignUpInfoRetrievedListener mSignUpInfoRetrievedListener;
 
+    private ProgressBarDialog mProgressBarDialog;
 
     private SignInButton mSignInButton;
     private MainActivity mActivity;
 
 
-    public GoogleSignInManager(SignInButton signInButton, MainActivity activity, GoogleSignUpInfoRetrievedListener listener){
+    public GoogleSignInManager(SignInButton signInButton, MainActivity activity, GoogleSignUpInfoRetrievedListener
+            listener, ProgressBarDialog progressBarDialog){
         mSignInButton=signInButton;
         mSignUpInfoRetrievedListener=listener;
         mActivity=activity;
 
+        mProgressBarDialog=progressBarDialog;
         mActivity.setGoogleSignInIntentListener(this);
         setupGoogleApiClient();
         customizeSignInButton();
@@ -71,6 +75,7 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
 
     @Override
     public void onClick(View view) {
+        mProgressBarDialog.show(mActivity.getSupportFragmentManager(),"progress_bar_dialog");
         FirebaseManager.SignOutGmail(mGoogleApiClient);
         startSignInIntent();
     }

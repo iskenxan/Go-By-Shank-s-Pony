@@ -23,6 +23,7 @@ import com.sriley.gobyshankspony.model.User;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignUpInfoRetrievedListener;
 import com.sriley.gobyshankspony.model.utils.RadioButtonSwitcher;
+import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,14 +32,10 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
 
 
 
-    private RadioButtonSwitcher mSignUpButtonsSwitcher;
     private GoogleSignInManager mGoogleSignInManager;
     private FacebookSignInManager mFacebookSignInManager;
+    private ProgressBarDialog mProgressBarDialog;
 
-
-    @BindView(R.id.SignUpBrokersRadioButton)RadioButton mBrokersRadioButton;
-    @BindView(R.id.SignUpLandlordRadioButton)RadioButton mLandlordRadioButton;
-    @BindView(R.id.SignUpRentersRadioButton)RadioButton mRentersRadioButton;
     @BindView(R.id.SignUpGoogleSignButton)SignInButton mGoogleSignInButton;
     @BindView(R.id.SignUpFacebookSignUpbutton)LoginButton mFacebookSignUpButton;
 
@@ -51,8 +48,7 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
         ButterKnife.bind(this,view);
 
 
-        mSignUpButtonsSwitcher=new RadioButtonSwitcher(mBrokersRadioButton,mRentersRadioButton,mLandlordRadioButton);
-        mFacebookSignInManager=new FacebookSignInManager(mFacebookSignUpButton,this);
+        mFacebookSignInManager=new FacebookSignInManager(mFacebookSignUpButton,this,mProgressBarDialog);
 
         return view;
     }
@@ -91,7 +87,8 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
     @Override
     public void onResume() {
         super.onResume();
-        mGoogleSignInManager=new GoogleSignInManager(mGoogleSignInButton, (MainActivity) getActivity(),this);
+        mProgressBarDialog=new ProgressBarDialog();
+        mGoogleSignInManager=new GoogleSignInManager(mGoogleSignInButton, (MainActivity) getActivity(),this,mProgressBarDialog);
 
     }
 
