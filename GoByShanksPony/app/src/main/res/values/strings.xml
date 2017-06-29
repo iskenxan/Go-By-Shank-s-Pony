@@ -13,7 +13,8 @@
         name="zillow_zipid_api_url">http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz1fvgmd9hs0b_aui2x&amp;rentzestimate=true&amp;address=ADDRESS&amp;citystatezip=CITY,STATE</string>
 
     <string
-        name="zillow_request_api_url">http://www.zillow.com/webservice/GetDeepComps.htm?zws-id=X1-ZWz1fvgmd9hs0b_aui2x&amp;zpid=ZIPID&amp;rentzestimate=true&amp;count=2</string>
+        name="zillow_request_api_url">http://www.zillow.com/webservice/GetDeepComps.htm?zws-id=X1-ZWz1fvgmd9hs0b_aui2x&amp;zpid=ZIPID&amp;rentzestimate=true&amp;count=3</string>
     <string
         name="zillow_property_details_url">http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm?zws-id=X1-ZWz1fvgmd9hs0b_aui2x&amp;zpid=ZPID</string>
+    <string name="listing_scrape_url">http://www.realtor.com/apartments/ZIP?pgsz=20</string>
 </resources>

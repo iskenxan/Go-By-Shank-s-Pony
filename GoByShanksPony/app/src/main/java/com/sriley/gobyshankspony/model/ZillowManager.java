@@ -4,8 +4,7 @@ package com.sriley.gobyshankspony.model;
 import android.content.Context;
 
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.interfaces.ZillowPhotoUrlRequestListener;
-import com.sriley.gobyshankspony.model.interfaces.ZillowRequestListener;
+import com.sriley.gobyshankspony.model.interfaces.ScrapeRequestListener;
 import com.sriley.gobyshankspony.model.utils.XMLHandler;
 
 import org.w3c.dom.Element;
@@ -21,33 +20,25 @@ import javax.xml.parsers.ParserConfigurationException;
 public class ZillowManager extends HttpRequestManager {
 
 
-    public static void getNearbyPropertiesForVenueList(Context context, ArrayList<Place> places, ZillowRequestListener
-            listener){
-        ArrayList<ZillowProperty> allProperties=new ArrayList<>();
-        for (Place place:places){
-            ArrayList<ZillowProperty> venueNearbyProperties= getNearbyPropertiesForSingleVenue(context,place);
-            if(venueNearbyProperties!=null)
-                allProperties.addAll(venueNearbyProperties);
-        }
-        listener.onZillowRequestCompleted(allProperties);
+
+
+
+
+    public static void getNearbyPropertiesForSingleVenue(Context context, Place place, ScrapeRequestListener listener){
+        ArrayList<ListingProperty> zillowProperties= getNearbyPropertiesForSingleVenue(context,place);
+
+        listener.onScrapeRequestComplete(zillowProperties);
     }
 
 
-    public static void getNearbyPropertiesForSingleVenue(Context context, Place place, ZillowRequestListener listener){
-        ArrayList<ZillowProperty> zillowProperties= getNearbyPropertiesForSingleVenue(context,place);
-
-        listener.onZillowRequestCompleted(zillowProperties);
-    }
-
-
-    public static ArrayList<ZillowProperty> getNearbyPropertiesForSingleVenue(Context context, Place place){
+    public static ArrayList<ListingProperty> getNearbyPropertiesForSingleVenue(Context context, Place place){
         try {
-               ArrayList<ZillowProperty> propertiesAtUserLocation= getZillowPropertyListAtLocation(context,place);
+               ArrayList<ListingProperty> propertiesAtUserLocation= getZillowPropertyListAtLocation(context,place);
 
             if(propertiesAtUserLocation!=null){
-                ArrayList<ZillowProperty> nearbyProperties=new ArrayList<>();
+                ArrayList<ListingProperty> nearbyProperties=new ArrayList<>();
                 nearbyProperties.addAll(propertiesAtUserLocation);
-                 ArrayList<ZillowProperty> neightborProperties= requestPropertyNeighbors(context,propertiesAtUserLocation);
+                 ArrayList<ListingProperty> neightborProperties= requestPropertyNeighbors(context,propertiesAtUserLocation);
                 if(neightborProperties!=null&&neightborProperties.size()>0)
                     nearbyProperties.addAll(neightborProperties);
 
@@ -67,7 +58,7 @@ public class ZillowManager extends HttpRequestManager {
 
 
 
-    public static ArrayList<ZillowProperty> getZillowPropertyListAtLocation(Context context, Place place) throws
+    public static ArrayList<ListingProperty> getZillowPropertyListAtLocation(Context context, Place place) throws
             IOException, SAXException, ParserConfigurationException {
         String searchUrl= createZipIdRequestUrl(context,place);
         HttpURLConnection httpURLConnection=getHttpUrlConnection(searchUrl);
@@ -78,7 +69,7 @@ public class ZillowManager extends HttpRequestManager {
            Element docEle=XMLHandler.getRootElement(httpURLConnection);
 
             if(docEle.getChildNodes().getLength()>2){
-                ArrayList<ZillowProperty> zillowProperties =XMLHandler.extractPropertiesFromUserLocation(docEle);
+                ArrayList<ListingProperty> zillowProperties =XMLHandler.extractPropertiesFromUserLocation(docEle);
 
                 return zillowProperties;
             }
@@ -89,12 +80,12 @@ public class ZillowManager extends HttpRequestManager {
 
 
 
-    private static ArrayList<ZillowProperty> requestPropertyNeighbors(Context context, ArrayList<ZillowProperty> userLocationProperties) throws IOException, ParserConfigurationException, SAXException {
+    private static ArrayList<ListingProperty> requestPropertyNeighbors(Context context, ArrayList<ListingProperty> userLocationProperties) throws IOException, ParserConfigurationException, SAXException {
 
-        ArrayList<ZillowProperty> allNeightbors=new ArrayList<>();
+        ArrayList<ListingProperty> allNeightbors=new ArrayList<>();
 
-        for(ZillowProperty property:userLocationProperties){
-            ArrayList<ZillowProperty> propertyNeightbors=requestSinglePropertyNeightbors(context,property);
+        for(ListingProperty property:userLocationProperties){
+            ArrayList<ListingProperty> propertyNeightbors=requestSinglePropertyNeightbors(context,property);
             if(propertyNeightbors!=null)
                 allNeightbors.addAll(propertyNeightbors);
         }
@@ -104,8 +95,8 @@ public class ZillowManager extends HttpRequestManager {
 
 
 
-    private static ArrayList<ZillowProperty> requestSinglePropertyNeightbors(Context context, ZillowProperty zillowProperty) throws IOException, ParserConfigurationException, SAXException {
-        String searchUrl= createSearchRequestUrl(context,zillowProperty.getId());
+    private static ArrayList<ListingProperty> requestSinglePropertyNeightbors(Context context, ListingProperty listingProperty) throws IOException, ParserConfigurationException, SAXException {
+        String searchUrl= createSearchRequestUrl(context, listingProperty.getId());
         HttpURLConnection httpURLConnection=getHttpUrlConnection(searchUrl);
 
         int responseCode=httpURLConnection.getResponseCode();
@@ -113,7 +104,7 @@ public class ZillowManager extends HttpRequestManager {
         if(responseCode==HttpURLConnection.HTTP_OK){
             Element docEle=XMLHandler.getRootElement(httpURLConnection);
             if(docEle.getChildNodes().getLength()>2){
-                ArrayList<ZillowProperty> propertyDetails=XMLHandler.extractPropertyDetails(docEle);
+                ArrayList<ListingProperty> propertyDetails=XMLHandler.extractPropertyDetails(docEle);
                 return propertyDetails;
             }
         }
@@ -122,42 +113,8 @@ public class ZillowManager extends HttpRequestManager {
     }
 
 
-    public static void asyncRequestPropertyPhotoUrl(final Context context, final String zipId, final ZillowPhotoUrlRequestListener listener){
-        Thread thread=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    requestPropertyPhotoUrl(context,zipId,listener);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParserConfigurationException e) {
-                    e.printStackTrace();
-                } catch (SAXException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-    }
 
 
-    public static void requestPropertyPhotoUrl(Context context,String zpid,ZillowPhotoUrlRequestListener listener) throws IOException,
-            ParserConfigurationException, SAXException {
-        String url=createPropertyDetailsRequestUrl(context,zpid);
-        HttpURLConnection httpURLConnection=getHttpUrlConnection(url);
-
-        int responseCode=httpURLConnection.getResponseCode();
-
-        if(responseCode==HttpURLConnection.HTTP_OK){
-            Element docEle=XMLHandler.getRootElement(httpURLConnection);
-            if(docEle.getChildNodes().getLength()>2){
-                String photoUrl=XMLHandler.extractPhotoUrl(docEle);
-                listener.onZillowUrlRequestResult(photoUrl);
-            }
-            else
-                listener.onZillowUrlRequestResult("empty_url");
-        }
-    }
 
 
 

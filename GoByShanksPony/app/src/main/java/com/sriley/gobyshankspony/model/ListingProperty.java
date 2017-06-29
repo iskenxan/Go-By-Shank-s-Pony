@@ -1,26 +1,27 @@
 package com.sriley.gobyshankspony.model;
 
 
-public class ZillowProperty extends Place {
+public class ListingProperty extends Place {
     private String id;
     private String name;
-    private String zip;
     private String bedrooms;
     private String bathrooms;
     private String rent;
+    private String imageUrl;
+
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public String getId() {
         return id;
     }
 
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
 
 
     public void setId(String id) {

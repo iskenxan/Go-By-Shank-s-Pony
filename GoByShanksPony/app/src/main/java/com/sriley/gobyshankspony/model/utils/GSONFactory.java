@@ -2,21 +2,20 @@ package com.sriley.gobyshankspony.model.utils;
 
 
 import com.google.gson.Gson;
-import com.sriley.gobyshankspony.model.Venue;
-import com.sriley.gobyshankspony.model.ZillowProperty;
+import com.sriley.gobyshankspony.model.ListingProperty;
 
 public class GSONFactory {
 
-    public static String convertVenueToString(ZillowProperty zillowProperty) {
+    public static String convertVenueToString(ListingProperty listingProperty) {
         Gson gson = new Gson();
-        String jsonStr = gson.toJson(zillowProperty);
+        String jsonStr = gson.toJson(listingProperty);
 
         return jsonStr;
     }
 
-    public static ZillowProperty convertStringToVenue(String venueStr){
+    public static ListingProperty convertStringToVenue(String venueStr){
         Gson gson=new Gson();
-        ZillowProperty venue=gson.fromJson(venueStr,ZillowProperty.class);
+        ListingProperty venue=gson.fromJson(venueStr,ListingProperty.class);
 
         return venue;
     }

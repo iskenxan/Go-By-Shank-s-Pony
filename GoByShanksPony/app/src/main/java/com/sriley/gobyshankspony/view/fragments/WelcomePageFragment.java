@@ -101,30 +101,4 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
     }
 
 
-
-
-
-    /*
-    private void setupTabLayout(){
-        mTabLayout.setupWithViewPager(mViewPager);
-
-        View signUpTabView=getTabView("SIGN UP");
-        mTabLayout.getTabAt(0).setCustomView(signUpTabView);
-
-        View loginTabView=getTabView("LOGIN");
-        mTabLayout.getTabAt(1).setCustomView(loginTabView);
-    }
-
-
-
-    private View getTabView(String tabTitle){
-        View tabView=LayoutInflater.from(getContext()).inflate(R.layout.custom_viewpager_tab,null);
-        TextView textView= (TextView) tabView.findViewById(R.id.tabTextView);
-        textView.setText(tabTitle);
-
-        return tabView;
-    }
-
-*/
-
 }

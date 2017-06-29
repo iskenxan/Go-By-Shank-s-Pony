@@ -1,6 +1,6 @@
 package com.sriley.gobyshankspony.model.utils;
 
-import com.sriley.gobyshankspony.model.ZillowProperty;
+import com.sriley.gobyshankspony.model.ListingProperty;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,8 +19,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class XMLHandler {
 
-    public static ArrayList <ZillowProperty> extractPropertiesFromUserLocation(Element docEle){
-        ArrayList<ZillowProperty> zillowProperties=new ArrayList<>();
+    public static ArrayList <ListingProperty> extractPropertiesFromUserLocation(Element docEle){
+        ArrayList<ListingProperty> zillowProperties=new ArrayList<>();
         NodeList response = docEle.getElementsByTagName("response");
         Element responseElement= (Element) response.item(0);
         Element resultsElement= (Element) responseElement.getElementsByTagName("results").item(0);
@@ -28,8 +28,8 @@ public class XMLHandler {
         for (int i=0;i<resultsElement.getElementsByTagName("result").getLength();i++){
             Element resultElement= (Element) resultsElement.getElementsByTagName("result").item(i);
 
-            ZillowProperty zillowProperty=extractSinglePropertyFromPropertiesElement(resultElement);
-            zillowProperties.add(zillowProperty);
+            ListingProperty listingProperty =extractSinglePropertyFromPropertiesElement(resultElement);
+            zillowProperties.add(listingProperty);
         }
 
         return zillowProperties;
@@ -49,8 +49,8 @@ public class XMLHandler {
     }
 
 
-    public static ArrayList<ZillowProperty> extractPropertyDetails(Element docEle){
-        ArrayList<ZillowProperty> zillowProperties=new ArrayList<>();
+    public static ArrayList<ListingProperty> extractPropertyDetails(Element docEle){
+        ArrayList<ListingProperty> zillowProperties=new ArrayList<>();
 
         NodeList response = docEle.getElementsByTagName("response");
         Element responseElement= (Element) response.item(0);
@@ -60,7 +60,7 @@ public class XMLHandler {
         for (int i=0;i<comparablesElement.getLength();i++){
             Element comparableElement= (Element) comparablesElement.item(i);
 
-            ZillowProperty comparableProperty= extractSinglePropertyFromPropertiesElement(comparableElement);
+            ListingProperty comparableProperty= extractSinglePropertyFromPropertiesElement(comparableElement);
             zillowProperties.add(comparableProperty);
         }
 
@@ -68,15 +68,15 @@ public class XMLHandler {
     }
 
 
-    public static ZillowProperty extractSinglePropertyFromPropertiesElement(Element propertyElement){
-        ZillowProperty zillowProperty=new ZillowProperty();
+    public static ListingProperty extractSinglePropertyFromPropertiesElement(Element propertyElement){
+        ListingProperty listingProperty =new ListingProperty();
         Element zipIdElement= (Element) propertyElement.getElementsByTagName("zpid").item(0);
         Element bathroomsElement= (Element) propertyElement.getElementsByTagName("bathrooms").item(0);
         Element bedroomsElement=(Element)propertyElement.getElementsByTagName("bedrooms").item(0);
         Element rentzestimateElement= (Element) propertyElement.getElementsByTagName("rentzestimate").item(0);
         if (rentzestimateElement!=null) {
             Element amountElement= (Element) rentzestimateElement.getElementsByTagName("amount").item(0);
-            zillowProperty.setRent(amountElement.getFirstChild().getNodeValue());
+            listingProperty.setRent(amountElement.getFirstChild().getNodeValue());
         }
         Element addressElement= (Element) propertyElement.getElementsByTagName("address").item(0);
         Element streetElement= (Element) addressElement.getElementsByTagName("street").item(0);
@@ -84,29 +84,29 @@ public class XMLHandler {
         Element city= (Element) addressElement.getElementsByTagName("city").item(0);
         Element state= (Element) addressElement.getElementsByTagName("state").item(0);
 
-        zillowProperty.setAddress(streetElement.getFirstChild().getNodeValue());
+        listingProperty.setAddress(streetElement.getFirstChild().getNodeValue());
 
         if(bathroomsElement!=null){
             String bathrooms=bathroomsElement.getFirstChild().getNodeValue();
             bathrooms=bathrooms.replace(".","");
             bathrooms=bathrooms.replace("0","");
-            zillowProperty.setBathrooms(bathrooms);
+            listingProperty.setBathrooms(bathrooms);
         }
 
         if(bedroomsElement!=null){
             String bedrooms=bedroomsElement.getFirstChild().getNodeValue();
             bedrooms=bedrooms.replace(".","");
             bedrooms=bedrooms.replace("0","");
-            zillowProperty.setBedrooms(bedrooms);
+            listingProperty.setBedrooms(bedrooms);
         }
 
 
-        zillowProperty.setCity(city.getFirstChild().getNodeValue());
-        zillowProperty.setState(state.getFirstChild().getNodeValue());
-        zillowProperty.setZip(zipcode.getFirstChild().getNodeValue());
-        zillowProperty.setId(zipIdElement.getFirstChild().getNodeValue());
+        listingProperty.setCity(city.getFirstChild().getNodeValue());
+        listingProperty.setState(state.getFirstChild().getNodeValue());
+        listingProperty.setZip(zipcode.getFirstChild().getNodeValue());
+        listingProperty.setId(zipIdElement.getFirstChild().getNodeValue());
 
-        return zillowProperty;
+        return listingProperty;
     }
 
 

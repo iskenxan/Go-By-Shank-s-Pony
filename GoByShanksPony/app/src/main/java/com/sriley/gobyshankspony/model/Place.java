@@ -6,7 +6,16 @@ public class Place {
     private String address;
     private String state;
     private String city;
+    private String zip;
 
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
 
     public String getAddress() {
         return address;

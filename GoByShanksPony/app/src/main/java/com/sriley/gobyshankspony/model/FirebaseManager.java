@@ -55,31 +55,12 @@ public class FirebaseManager {
     }
 
 
-    public static void checkIfNewUserAndSaveDetails(final User user) {
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        String userKey = Formatter.convertEmailIntoUserkey(user.getEmail());
-        database.child(USERS).child(userKey).addListenerForSingleValueEvent(new FirebaseCallBacks.onCheckIfUserExistsCallBack(user));
-    }
-
-
     public static void checkIfNewUser(User user, final FirebaseUserCheckListener listener){
         final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         String userKey = Formatter.convertEmailIntoUserkey(user.getEmail());
 
-        database.child(USERS).child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue()!=null)
-                    listener.onUserCheck(false);
-                else
-                    listener.onUserCheck(true);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        database.child(USERS).child(userKey).addListenerForSingleValueEvent(new FirebaseCallBacks
+                .onCheckIfUserExistsCallBack(listener));
     }
 
 

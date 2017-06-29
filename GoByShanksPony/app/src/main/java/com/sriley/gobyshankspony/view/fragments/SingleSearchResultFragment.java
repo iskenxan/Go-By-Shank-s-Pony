@@ -10,36 +10,36 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.MyPreferenceManager;
-import com.sriley.gobyshankspony.model.ZillowManager;
-import com.sriley.gobyshankspony.model.ZillowProperty;
-import com.sriley.gobyshankspony.model.interfaces.ZillowPhotoUrlRequestListener;
+import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.utils.GSONFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SingleSearchResultFragment extends Fragment implements ZillowPhotoUrlRequestListener {
+public class SingleSearchResultFragment extends Fragment{
 
-    public static final String PROPERTY_ARGS_KEY ="property";
-
-
-    @BindView(R.id.SingleSearchResultImageView)ImageView mImageView;
-    @BindView(R.id.SingleSearchResultAddressTextView)TextView mAddressTextView;
-    @BindView(R.id.SingleSearchResultBedroomsTextView)TextView mBedroomsTextView;
-    @BindView(R.id.SingleSearchResultBathroomsTextView)TextView mBathroomsTextView;
-    @BindView(R.id.SingleSearchResultRentTextView)TextView mRentTextView;
+    public static final String PROPERTY_ARGS_KEY = "property";
 
 
-    ZillowProperty mZillowProperty;
+
+
+    @BindView(R.id.SingleSearchResultImageView) ImageView mImageView;
+    @BindView(R.id.SingleSearchResultAddressTextView) TextView mAddressTextView;
+    @BindView(R.id.SingleSearchResultBedroomsTextView) TextView mBedroomsTextView;
+    @BindView(R.id.SingleSearchResultBathroomsTextView) TextView mBathroomsTextView;
+    @BindView(R.id.SingleSearchResultRentTextView) TextView mRentTextView;
+    @BindView(R.id.SingleSearchResultNameTextView)TextView mNameTextView;
+
+
+    ListingProperty mListingProperty;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_single_search_result,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_single_search_result, container, false);
+        ButterKnife.bind(this, view);
 
         extractArgs();
         populateViews();
@@ -49,46 +49,30 @@ public class SingleSearchResultFragment extends Fragment implements ZillowPhotoU
     }
 
 
-    private void extractArgs(){
-        String propertyStr=getArguments().getString(PROPERTY_ARGS_KEY,"");
-        mZillowProperty= GSONFactory.convertStringToVenue(propertyStr);
+    private void extractArgs() {
+        String propertyStr = getArguments().getString(PROPERTY_ARGS_KEY, "");
+        mListingProperty = GSONFactory.convertStringToVenue(propertyStr);
 
     }
 
 
-    private void populateViews(){
-        mAddressTextView.setText(mZillowProperty.getAddress()+", "+mZillowProperty.getCity()+", "+mZillowProperty.getState());
-        if(mZillowProperty.getBedrooms()!=null)
-            mBedroomsTextView.setText("Bedrooms: "+mZillowProperty.getBedrooms());
-        if(mZillowProperty.getBathrooms()!=null)
-            mBathroomsTextView.setText("Bathrooms: "+mZillowProperty.getBathrooms());
-        if(mZillowProperty.getRent()!=null);
-            mRentTextView.setText("Rent: "+mZillowProperty.getRent());
-        mAddressTextView.setText(mZillowProperty.getAddress()+", "+mZillowProperty.getCity()+", "+mZillowProperty.getState());
+    private void populateViews() {
+        mNameTextView.setText(mListingProperty.getName());
+        mAddressTextView.setText(mListingProperty.getAddress() + ", " + mListingProperty.getCity() + ", " + mListingProperty.getState());
+        mBedroomsTextView.setText(mListingProperty.getBedrooms());
+        mBathroomsTextView.setText(mListingProperty.getBathrooms());
+        mRentTextView.setText(mListingProperty.getRent());
+        mAddressTextView.setText(mListingProperty.getAddress() + ", " + mListingProperty.getCity() + ", " + mListingProperty.getState());
+        loadImage(mListingProperty.getImageUrl());
+    }
 
-        String imageUrl= MyPreferenceManager.getPropertyImageUrl(getContext(),mZillowProperty.getId());
-        if(imageUrl==null)
-            ZillowManager.asyncRequestPropertyPhotoUrl(getContext(),mZillowProperty.getId(),this);
+
+    private void loadImage(String imageUrl){
+        if(imageUrl.contains(".svg"))
+            Picasso.with(getContext()).load(R.drawable.image_not_available).resize(400, 300).centerCrop().into(mImageView);
         else
-            loadImage(imageUrl);
+            Picasso.with(getContext()).load(imageUrl).resize(400, 300).centerCrop().into(mImageView);
     }
 
 
-    @Override
-    public void onZillowUrlRequestResult(final String url) {
-        MyPreferenceManager.safePropertyImageUrl(getContext(),url,mZillowProperty.getId());
-        loadImage(url);
-    }
-
-    private void loadImage(final String imageUrl){
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(!imageUrl.equals("empty_url"))
-                    Glide.with(getContext()).load(imageUrl).into(mImageView);
-                else
-                    Glide.with(getContext()).load(R.drawable.image_not_available).into(mImageView);
-            }
-        });
-    }
 }

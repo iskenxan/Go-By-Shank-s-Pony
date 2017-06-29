@@ -12,6 +12,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
 
 public class FirebaseCallBacks {
 
@@ -26,7 +27,6 @@ public class FirebaseCallBacks {
 
         @Override
         public void onComplete(@NonNull Task<AuthResult> task) {
-            final FirebaseAuth auth= FirebaseAuth.getInstance();
 
             if(task.isSuccessful()){
                 mListener.onAuthenticationComplete(true);
@@ -42,18 +42,19 @@ public class FirebaseCallBacks {
     public static class onCheckIfUserExistsCallBack implements ValueEventListener{
 
 
-        private User mUser;
+        private FirebaseUserCheckListener mListener;
 
-        public onCheckIfUserExistsCallBack(User user){
-            mUser=user;
+        public onCheckIfUserExistsCallBack(FirebaseUserCheckListener listener){
+            mListener=listener;
         }
 
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            if (dataSnapshot.getValue() == null) {
-                FirebaseManager.saveUserDetails(mUser);
-            }
+            if(dataSnapshot.getValue()!=null)
+                mListener.onUserCheck(false);
+            else
+                mListener.onUserCheck(true);
         }
 
 

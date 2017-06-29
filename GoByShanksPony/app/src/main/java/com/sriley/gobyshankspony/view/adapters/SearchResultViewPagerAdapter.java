@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.sriley.gobyshankspony.model.ZillowProperty;
+import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.utils.GSONFactory;
 import com.sriley.gobyshankspony.view.fragments.SingleSearchResultFragment;
 
@@ -14,9 +14,9 @@ import java.util.ArrayList;
 
 public class SearchResultViewPagerAdapter extends FragmentPagerAdapter {
 
-    private ArrayList<ZillowProperty> mProperties;
+    private ArrayList<ListingProperty> mProperties;
 
-    public SearchResultViewPagerAdapter(FragmentManager fragmentManager, ArrayList<ZillowProperty> properties){
+    public SearchResultViewPagerAdapter(FragmentManager fragmentManager, ArrayList<ListingProperty> properties){
         super(fragmentManager);
         mProperties =properties;
     }
