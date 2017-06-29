@@ -7,6 +7,7 @@
     <color name="sign_up_button_color">#35b8b2</color>
     <color name="temp_welcome_page_bg">#407977</color>
     <color name="text_color">#164644</color>
-    <color name="text_color_light">#02b7b0</color>
-    <color name="text_color_price">#4CAF50</color>
+    <color name="text_color_light">#f44336</color>
+    <color name="text_color_price">#8e1616</color>
+    <color name="fab_color">#D50000</color>
 </resources>

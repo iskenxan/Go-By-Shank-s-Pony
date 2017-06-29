@@ -3,10 +3,12 @@ package com.sriley.gobyshankspony.model.utils;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sriley.gobyshankspony.R;
+import com.sriley.gobyshankspony.view.fragments.SearchResultErrorFragment;
 import com.sriley.gobyshankspony.view.fragments.SearchResultFragment;
 import com.sriley.gobyshankspony.view.fragments.SelectApartmentTypeFragment;
 import com.sriley.gobyshankspony.view.fragments.SelectUserTypeFragment;
@@ -41,6 +43,11 @@ public class FragmentFactory {
         beginContentActivityFragmentTransaction(activity,searchResultFragment);
     }
 
+    public static void startSearchErrorFragment(AppCompatActivity activity){
+        SearchResultErrorFragment fragment=new SearchResultErrorFragment();
+        beginContentActivityFragmentTransaction(activity,fragment);
+    }
+
     private static void beginContentActivityFragmentTransaction(AppCompatActivity activity,Fragment fragment){
         FragmentManager fragmentManager=activity.getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.mainContentPlaceHolder,fragment).commit();
@@ -51,7 +58,6 @@ public class FragmentFactory {
         FragmentManager fragmentManager=activity.getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.mainWelcomePlaceHolder,fragment).commit();
     }
-
 
 
 }

@@ -43,7 +43,7 @@ public class JSOUPManager {
             listingProperty.setName(listingName);
         }
         else
-            listingProperty.setName("For rent");
+            listingProperty.setName("Property for rent");
     }
 
 
