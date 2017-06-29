@@ -20,7 +20,6 @@ public class MyLocationManager implements LocationListener, LocationPermissionLi
     private ContentActivity mActivity;
     private UserLocationListener mUserLocationListener;
 
-
     public MyLocationManager( Activity activity, UserLocationListener listener) {
         mLocationManager= (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         mActivity = (ContentActivity) activity;
@@ -39,6 +38,15 @@ public class MyLocationManager implements LocationListener, LocationPermissionLi
         } else {
             mLocationManager.requestLocationUpdates(mLocationManager.NETWORK_PROVIDER, 0,0, this);
         }
+    }
+
+
+
+    public void removeLocationUpdates(){
+        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager
+                .PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission
+                .ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        mLocationManager.removeUpdates(this);
     }
 
 

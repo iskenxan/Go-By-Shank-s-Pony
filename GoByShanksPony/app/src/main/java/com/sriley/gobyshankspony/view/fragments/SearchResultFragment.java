@@ -2,7 +2,6 @@ package com.sriley.gobyshankspony.view.fragments;
 
 import android.location.Location;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -10,30 +9,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.MyLocationManager;
 import com.sriley.gobyshankspony.model.Place;
 import com.sriley.gobyshankspony.model.ScrapeManager;
+import com.sriley.gobyshankspony.model.interfaces.ListingScrapeRequestListener;
+import com.sriley.gobyshankspony.model.interfaces.TimerListener;
 import com.sriley.gobyshankspony.model.interfaces.UserLocationListener;
-import com.sriley.gobyshankspony.model.interfaces.ScrapeRequestListener;
+import com.sriley.gobyshankspony.model.utils.AsyncTimerTask;
 import com.sriley.gobyshankspony.model.utils.Formatter;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
-import com.sriley.gobyshankspony.view.adapters.SearchResultViewPagerAdapter;
+import com.sriley.gobyshankspony.view.adapters.ListingViewPagerAdapter;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
-public class SearchResultFragment extends Fragment implements UserLocationListener, ScrapeRequestListener {
+public class SearchResultFragment extends Fragment implements UserLocationListener, ListingScrapeRequestListener,TimerListener {
 
     public static final String APARTMENT_TYPE_ARGS="apartment_type";
 
@@ -41,23 +39,13 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
     @BindView(R.id.searchResultLoadingImageContainer)LinearLayout mLoadingImageContainer;
     boolean timeOut=true;
 
-    Thread mThread=  new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if(timeOut) {
-                FragmentFactory.startSearchErrorFragment((AppCompatActivity) getActivity());
-            }
-        }
-    });
 
 
     MyLocationManager mMyLocationManager;
     ArrayList<ListingProperty> mPropertyList =new ArrayList<>();
+    WebView mWebView;
+
+    AsyncTimerTask mTimerTask;
 
 
     @Nullable
@@ -68,6 +56,7 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
 
         mMyLocationManager=new MyLocationManager(getActivity(),this);
         mMyLocationManager.checkPermissionAndRequestLocation();
+        setActionBarTitle("GO BY SHANK'S PONY");
 
         return view;
     }
@@ -77,10 +66,21 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
     public void onUserLocationDetected(Location location) {
 
         Place place=Formatter.getPlaceFromLocation(getContext(),location);
-        mThread.start();
-        ScrapeManager.getZillowRentals(getContext(),place,this);
+        mWebView=new WebView(getContext());
+        ScrapeManager.getRentalsList(mWebView,place,this);
     }
 
+
+    @Override
+    public void onTimerComplete() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mWebView.stopLoading();
+                FragmentFactory.startSearchErrorFragment((AppCompatActivity) getActivity());
+            }
+        });
+    }
 
 
     @Override
@@ -99,10 +99,18 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
     }
 
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMyLocationManager.removeLocationUpdates();
+    }
+
+
 
     Runnable setupViewPagerRunnable=new Runnable() {
         @Override
         public void run() {
+            setActionBarTitle("IT'S A MATCH!");
             mLoadingImageContainer.setVisibility(View.INVISIBLE);
             setupViewPager();
         }
@@ -114,8 +122,17 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
         if(mViewPager.getAdapter()!=null)
             mViewPager.getAdapter().notifyDataSetChanged();
         else{
-            SearchResultViewPagerAdapter adapter=new SearchResultViewPagerAdapter(getChildFragmentManager(), mPropertyList);
+            ListingViewPagerAdapter adapter=new ListingViewPagerAdapter(getChildFragmentManager(), mPropertyList, ListingViewPagerAdapter.FRAGMENT_TYPE_SEARCH_RESULT);
             mViewPager.setAdapter(adapter);
         }
     }
+
+
+
+    private void setActionBarTitle(String title){
+        AppCompatActivity activity= (AppCompatActivity) getActivity();
+        activity.getSupportActionBar().setTitle(title);
+    }
+
+
 }

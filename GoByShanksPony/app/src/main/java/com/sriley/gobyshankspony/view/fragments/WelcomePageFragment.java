@@ -23,6 +23,7 @@ import com.sriley.gobyshankspony.model.User;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignUpInfoRetrievedListener;
 import com.sriley.gobyshankspony.model.utils.RadioButtonSwitcher;
+import com.sriley.gobyshankspony.view.dialogs.ErrorDialog;
 import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
 
 import butterknife.BindView;
@@ -74,6 +75,9 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
     public void onAuthenticationComplete(boolean result) {
         if(result)
             startContentActivity();
+        else{
+            ErrorDialog.displayDialog(getFragmentManager(),ErrorDialog.SIGN_IN_ERROR_MESSAGE);
+        }
     }
 
 

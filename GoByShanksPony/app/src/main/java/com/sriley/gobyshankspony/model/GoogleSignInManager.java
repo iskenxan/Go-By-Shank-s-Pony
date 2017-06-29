@@ -97,9 +97,9 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
 
 
     private void handleSignUpIntentResult(GoogleSignInResult result){
+        mProgressBarDialog.dismiss();
         if (result.isSuccess()) {
             GoogleSignInAccount userAccount = result.getSignInAccount();
-
             mSignUpInfoRetrievedListener.onGmailUserInfoRetrieved(userAccount);
         }
     }

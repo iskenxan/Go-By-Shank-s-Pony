@@ -1,4 +1,4 @@
-package com.sriley.gobyshankspony.model.utils;
+package com.sriley.gobyshankspony.model;
 
 import android.graphics.Bitmap;
 import android.webkit.WebView;

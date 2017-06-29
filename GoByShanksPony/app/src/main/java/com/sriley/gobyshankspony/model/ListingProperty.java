@@ -8,7 +8,25 @@ public class ListingProperty extends Place {
     private String bathrooms;
     private String rent;
     private String imageUrl;
+    private String detailsUrl;
+    private String broker;
 
+
+    public String getBroker() {
+        return broker;
+    }
+
+    public void setBroker(String broker) {
+        this.broker = broker;
+    }
+
+    public String getDetailsUrl() {
+        return detailsUrl;
+    }
+
+    public void setDetailsUrl(String detailsUrl) {
+        this.detailsUrl = detailsUrl;
+    }
 
     public String getImageUrl() {
         return imageUrl;

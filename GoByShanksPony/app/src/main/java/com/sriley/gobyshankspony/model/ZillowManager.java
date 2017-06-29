@@ -4,7 +4,7 @@ package com.sriley.gobyshankspony.model;
 import android.content.Context;
 
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.interfaces.ScrapeRequestListener;
+import com.sriley.gobyshankspony.model.interfaces.ListingScrapeRequestListener;
 import com.sriley.gobyshankspony.model.utils.XMLHandler;
 
 import org.w3c.dom.Element;
@@ -24,7 +24,7 @@ public class ZillowManager extends HttpRequestManager {
 
 
 
-    public static void getNearbyPropertiesForSingleVenue(Context context, Place place, ScrapeRequestListener listener){
+    public static void getNearbyPropertiesForSingleVenue(Context context, Place place, ListingScrapeRequestListener listener){
         ArrayList<ListingProperty> zillowProperties= getNearbyPropertiesForSingleVenue(context,place);
 
         listener.onScrapeRequestComplete(zillowProperties);

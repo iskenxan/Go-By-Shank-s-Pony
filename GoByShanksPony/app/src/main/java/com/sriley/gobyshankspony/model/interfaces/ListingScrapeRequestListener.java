@@ -5,6 +5,6 @@ import com.sriley.gobyshankspony.model.ListingProperty;
 
 import java.util.ArrayList;
 
-public interface ScrapeRequestListener {
+public interface ListingScrapeRequestListener {
     void onScrapeRequestComplete(ArrayList<ListingProperty> listingProperty);
 }

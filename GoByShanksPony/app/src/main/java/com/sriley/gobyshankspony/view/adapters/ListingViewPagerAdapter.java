@@ -7,25 +7,38 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.utils.GSONFactory;
+import com.sriley.gobyshankspony.view.fragments.SingleFavoriteFragment;
 import com.sriley.gobyshankspony.view.fragments.SingleSearchResultFragment;
 
 import java.util.ArrayList;
 
 
-public class SearchResultViewPagerAdapter extends FragmentPagerAdapter {
+public class ListingViewPagerAdapter extends FragmentPagerAdapter {
+
+    public static final String FRAGMENT_TYPE_SEARCH_RESULT="sarch_result";
+    public static final String FRAGMENT_TYPE_FAVORITE="favorite";
 
     private ArrayList<ListingProperty> mProperties;
+    private String mApartmentType;
 
-    public SearchResultViewPagerAdapter(FragmentManager fragmentManager, ArrayList<ListingProperty> properties){
+    public ListingViewPagerAdapter(FragmentManager fragmentManager, ArrayList<ListingProperty> properties, String apartmentType){
         super(fragmentManager);
         mProperties =properties;
+        mApartmentType=apartmentType;
     }
 
 
     @Override
     public Fragment getItem(int position) {
-        SingleSearchResultFragment fragment=new SingleSearchResultFragment();
-        setFragmentArgs(position,fragment);
+
+        Fragment fragment;
+
+        if(mApartmentType.equals(FRAGMENT_TYPE_SEARCH_RESULT))
+            fragment=new SingleSearchResultFragment();
+        else
+            fragment=new SingleFavoriteFragment();
+
+            setFragmentArgs(position,fragment);
 
 
         return fragment;

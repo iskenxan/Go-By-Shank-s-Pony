@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:fab="http://schemas.android.com/apk/res-auto"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
+              xmlns:fab="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -18,7 +15,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:id="@+id/SingleSearchResultImageView"
+                android:id="@+id/SingleFavoriteImageView"
                 android:scaleType="centerCrop"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -34,7 +31,7 @@
                     android:text="$2500"
                     android:textColor="@color/text_color_price"
                     android:gravity="center"
-                    android:id="@+id/SingleSearchResultRentTextView"
+                    android:id="@+id/SingleFavoriteRentTextView"
                     android:layout_weight="1"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -56,7 +53,7 @@
                         android:textStyle="bold"
                         android:gravity="center"
                         android:textSize="24sp"
-                        android:id="@+id/SingleSearchResultBathroomsTextView"/>
+                        android:id="@+id/SingleFavoriteBathroomsTextView"/>
 
                     <ImageView
                         android:layout_width="30dp"
@@ -79,7 +76,7 @@
                         android:textStyle="bold"
                         android:gravity="center"
                         android:textSize="24sp"
-                        android:id="@+id/SingleSearchResultBedroomsTextView"/>
+                        android:id="@+id/SingleFavoriteBedroomsTextView"/>
 
                     <ImageView
                         android:layout_width="28dp"
@@ -94,7 +91,7 @@
                 android:textSize="26sp"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/text_color_light"
-                android:id="@+id/SingleSearchResultNameTextView"
+                android:id="@+id/SingleFavoriteNameTextView"
                 android:layout_height="wrap_content"/>
             <TextView
                 android:layout_width="match_parent"
@@ -102,15 +99,15 @@
                 android:gravity="center"
                 android:textSize="15sp"
                 android:textColor="@android:color/black"
-                android:layout_below="@id/SingleSearchResultNameTextView"
-                android:id="@+id/SingleSearchResultAddressTextView"
+                android:layout_below="@id/SingleFavoriteNameTextView"
+                android:id="@+id/SingleFavoriteAddressTextView"
                 android:layout_height="20dp"/>
 
         </LinearLayout>
 
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/fabMenu"
+            android:id="@+id/FavoritefabMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_addButtonColorNormal="@color/fab_color"
@@ -128,31 +125,13 @@
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/callFabButton"
+                android:id="@+id/favoriteCallFabButton"
                 fab:fab_icon="@drawable/phone_white"
                 android:padding="10dp"
                 fab:fab_colorNormal="@color/fab_color"
                 fab:fab_colorPressed="@color/text_color"
                 fab:fab_size="mini"/>
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/favoritesFabButton"
-                fab:fab_icon="@drawable/heart_white"
-                android:padding="10dp"
-                fab:fab_colorNormal="@color/fab_color"
-                fab:fab_colorPressed="@color/text_color"
-                fab:fab_size="mini"/>
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/refreshFabButton"
-                fab:fab_icon="@drawable/refresh_white"
-                android:padding="10dp"
-                fab:fab_colorNormal="@color/fab_color"
-                fab:fab_colorPressed="@color/text_color"
-                fab:fab_size="mini"/>
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 

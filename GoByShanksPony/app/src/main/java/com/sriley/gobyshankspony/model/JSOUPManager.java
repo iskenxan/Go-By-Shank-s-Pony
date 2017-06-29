@@ -10,6 +10,22 @@ import java.util.ArrayList;
 
 public class JSOUPManager {
 
+
+    public static String extractPropertyNumber(String htmlStr){
+        Document doc = Jsoup.parse(htmlStr);
+        Elements phoneNumberElement=doc.select("h3.ldp-rental-toll-free");
+
+        if(phoneNumberElement.size()>0){
+            String phoneNumber=phoneNumberElement.get(0).text().replace(" Call for more info","");
+            return phoneNumber;
+        }
+
+
+        return null;
+    }
+
+
+
     public static ArrayList<ListingProperty> extractPropertiesFromHTMLString(String htmlStr) {
         ArrayList<ListingProperty> properties = new ArrayList<>();
         Document doc = Jsoup.parse(htmlStr);
@@ -30,6 +46,9 @@ public class JSOUPManager {
         getRentPrice(listingElement,listingProperty);
         getAddress(listingElement,listingProperty);
         getMetadata(listingElement,listingProperty);
+        getDetailsUrl(listingElement,listingProperty);
+        getPropertyBroker(listingElement,listingProperty);
+
 
         return listingProperty;
     }
@@ -90,6 +109,24 @@ public class JSOUPManager {
             listingProperty.setBathrooms(bathsElement.get(0).text().replace(" ba",""));
         else
             listingProperty.setBathrooms("n/a");
+    }
+
+    private static void getDetailsUrl(Element listingElement,ListingProperty listingProperty){
+        Element detailsContainer=listingElement.select("div.srp-item-ldp-link").get(0);
+        Element linkElement=detailsContainer.select("a").get(0);
+        String relativeLink=linkElement.attr("href");
+        String fullLink="http://www.realtor.com"+relativeLink;
+
+        listingProperty.setDetailsUrl(fullLink);
+    }
+
+
+    private static void getPropertyBroker(Element listingElement,ListingProperty listingProperty){
+        Elements brokerItem=listingElement.select("span.srp-item-broker-text-sm");
+        if(brokerItem.size()>0){
+            String broker=brokerItem.get(0).text();
+            listingProperty.setBroker(broker);
+        }
     }
 
 }

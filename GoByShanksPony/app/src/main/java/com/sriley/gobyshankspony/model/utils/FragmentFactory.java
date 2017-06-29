@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sriley.gobyshankspony.R;
+import com.sriley.gobyshankspony.view.fragments.FavoritesFragment;
 import com.sriley.gobyshankspony.view.fragments.SearchResultErrorFragment;
 import com.sriley.gobyshankspony.view.fragments.SearchResultFragment;
 import com.sriley.gobyshankspony.view.fragments.SelectApartmentTypeFragment;
@@ -48,6 +49,11 @@ public class FragmentFactory {
         beginContentActivityFragmentTransaction(activity,fragment);
     }
 
+    public static void startFavoritesFragment(AppCompatActivity activity){
+        FavoritesFragment favoritesFragment=new FavoritesFragment();
+        beginContentActivityFragmentTransaction(activity,favoritesFragment);
+    }
+
     private static void beginContentActivityFragmentTransaction(AppCompatActivity activity,Fragment fragment){
         FragmentManager fragmentManager=activity.getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.mainContentPlaceHolder,fragment).commit();
@@ -58,6 +64,7 @@ public class FragmentFactory {
         FragmentManager fragmentManager=activity.getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.mainWelcomePlaceHolder,fragment).commit();
     }
+
 
 
 }

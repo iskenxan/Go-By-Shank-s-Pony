@@ -1,29 +1,23 @@
 package com.sriley.gobyshankspony.view.fragments;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.squareup.picasso.Picasso;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.PhoneCallManager;
 import com.sriley.gobyshankspony.model.ScrapeManager;
-import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.PhoneScrapeRequestListener;
-import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.model.utils.GSONFactory;
 import com.sriley.gobyshankspony.view.dialogs.ErrorDialog;
 import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
@@ -32,39 +26,38 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SingleSearchResultFragment extends Fragment implements FirebaseFavoritesListener, PhoneScrapeRequestListener {
+
+
+public class SingleFavoriteFragment extends Fragment implements PhoneScrapeRequestListener {
 
     public static final String PROPERTY_ARGS_KEY = "property";
 
-
-    @BindView(R.id.SingleSearchResultImageView)
+    @BindView(R.id.SingleFavoriteImageView)
     ImageView mImageView;
-    @BindView(R.id.SingleSearchResultAddressTextView)
+    @BindView(R.id.SingleFavoriteAddressTextView)
     TextView mAddressTextView;
-    @BindView(R.id.SingleSearchResultBedroomsTextView)
+    @BindView(R.id.SingleFavoriteBedroomsTextView)
     TextView mBedroomsTextView;
-    @BindView(R.id.SingleSearchResultBathroomsTextView)
+    @BindView(R.id.SingleFavoriteBathroomsTextView)
     TextView mBathroomsTextView;
-    @BindView(R.id.SingleSearchResultRentTextView)
+    @BindView(R.id.SingleFavoriteRentTextView)
     TextView mRentTextView;
-    @BindView(R.id.SingleSearchResultNameTextView)
+    @BindView(R.id.SingleFavoriteNameTextView)
     TextView mNameTextView;
-    @BindView(R.id.callFabButton)
+    @BindView(R.id.favoriteCallFabButton)
     FloatingActionButton mCallFab;
-    @BindView(R.id.favoritesFabButton)
-    FloatingActionButton mFavoritesFab;
-    @BindView(R.id.refreshFabButton)
-    FloatingActionButton mRefreshFab;
-    @BindView(R.id.fabMenu)FloatingActionsMenu mFabMenu;
+    @BindView(R.id.FavoritefabMenu)FloatingActionsMenu mFabMenu;
+
 
     ListingProperty mListingProperty;
     ProgressBarDialog mProgressBarDialog;
     WebView mWebView;
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_single_search_result, container, false);
+        View view = inflater.inflate(R.layout.fragment_single_favorite, container, false);
         ButterKnife.bind(this, view);
 
         mWebView=new WebView(getContext());
@@ -102,7 +95,7 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
     }
 
 
-    @OnClick(R.id.callFabButton)
+    @OnClick(R.id.favoriteCallFabButton)
     public void onCallFabClicked() {
 
         mFabMenu.collapse();
@@ -118,29 +111,7 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
         if(phone!=null)
             PhoneCallManager.callNumber(phone,getActivity());
         else {
-            ErrorDialog dialog= ErrorDialog.newInstance(mListingProperty.getBroker());
-            dialog.show(getFragmentManager(),"no_phone_dialog");
+            ErrorDialog.displayDialog(getFragmentManager(),ErrorDialog.BROKER_ERROR_MESSAGE+mListingProperty.getBroker());
         }
     }
-
-    @OnClick(R.id.favoritesFabButton)
-    public void onFavoritesFabClicked() {
-        mFabMenu.collapse();
-        FirebaseManager.savePropertyInFavorites(mListingProperty, this);
-    }
-
-    @Override
-    public void onPropertyAddedToFavorites(boolean success) {
-        if (success)
-            Toast.makeText(getContext(), "Property was added to your favorites", Toast.LENGTH_LONG).show();
-    }
-
-
-    @OnClick(R.id.refreshFabButton)
-    public void onRefreshFabClicked() {
-        FragmentFactory.startSearchResultFragment((AppCompatActivity) getActivity(), 1);
-    }
-
-
-
 }

@@ -12,51 +12,48 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
 
 public class FirebaseCallBacks {
 
-    public static class onFirebaseSignUpCompleteListener implements OnCompleteListener<AuthResult>{
+    public static class onFirebaseSignUpCompleteListener implements OnCompleteListener<AuthResult> {
 
         private FirebaseAuthenticationListener mListener;
 
-        public onFirebaseSignUpCompleteListener(FirebaseAuthenticationListener listener){
-            mListener=listener;
+        public onFirebaseSignUpCompleteListener(FirebaseAuthenticationListener listener) {
+            mListener = listener;
         }
 
 
         @Override
         public void onComplete(@NonNull Task<AuthResult> task) {
-
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 mListener.onAuthenticationComplete(true);
-            }
-            else
+            } else
                 mListener.onAuthenticationComplete(false);
         }
 
     }
 
 
-
-    public static class onCheckIfUserExistsCallBack implements ValueEventListener{
+    public static class onCheckIfUserExistsCallBack implements ValueEventListener {
 
 
         private FirebaseUserCheckListener mListener;
 
-        public onCheckIfUserExistsCallBack(FirebaseUserCheckListener listener){
-            mListener=listener;
+        public onCheckIfUserExistsCallBack(FirebaseUserCheckListener listener) {
+            mListener = listener;
         }
 
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            if(dataSnapshot.getValue()!=null)
+            if (dataSnapshot.getValue() != null)
                 mListener.onUserCheck(false);
             else
                 mListener.onUserCheck(true);
         }
-
 
 
         @Override
@@ -65,4 +62,21 @@ public class FirebaseCallBacks {
         }
     }
 
+
+    public static class onFavoritesAddCallBack implements OnCompleteListener<Void> {
+
+        FirebaseFavoritesListener mListener;
+
+        public onFavoritesAddCallBack(FirebaseFavoritesListener listener){
+            mListener=listener;
+        }
+
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if(task.isSuccessful())
+                mListener.onPropertyAddedToFavorites(true);
+            else
+                mListener.onPropertyAddedToFavorites(false);
+        }
+    }
 }
