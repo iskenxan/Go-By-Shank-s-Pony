@@ -16,6 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Formatter {
+    public static final String USERTYPE_RENTER="renter";
+    public static final String USERTYPE_LANDLORD="landlord";
+    public static final String USERTYPE_AGENT="agent";
+
+
 
     public static String convertEmailIntoUserkey(String email){
         String username=email.replace(".","_");

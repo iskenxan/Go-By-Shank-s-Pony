@@ -17,8 +17,7 @@ public class ErrorDialog extends DialogFragment implements View.OnClickListener 
 
 
     public static final String BROKER_ERROR_MESSAGE ="No phone number was found for the property.For more information about " + "the property contact ";
-    public static final String SIGN_IN_ERROR_MESSAGE="Error occured while trying to\n sign in with your account" +
-            ".Please try again later";
+    public static final String SIGN_IN_ERROR_MESSAGE="Error occured while trying to\n sign in with your account.Please try again later";
 
     private TextView mDialogMessage;
     private Button mCloseButton;

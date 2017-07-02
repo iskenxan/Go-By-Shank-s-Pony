@@ -54,7 +54,7 @@ public class SelectUserTypeFragment extends Fragment {
     public void onNextButtonClicked(){
         User user=getUserDetails();
         FirebaseManager.saveUserDetails(user);
-        FragmentFactory.startSearchResultFragment((AppCompatActivity) getActivity(),1);
+        FragmentFactory.startFragmentBasedOnUserType(user.getUserType(), (AppCompatActivity) getActivity());
     }
 
 

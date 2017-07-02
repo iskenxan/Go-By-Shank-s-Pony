@@ -125,10 +125,18 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
         mProgressBarDialog.dismiss();
         if(phone!=null)
             PhoneCallManager.callNumber(phone,getActivity());
-        else {
-            ErrorDialog dialog= ErrorDialog.newInstance(mListingProperty.getBroker());
-            dialog.show(getFragmentManager(),"no_phone_dialog");
-        }
+        else
+            getBrokerNameAndDisplayDialog();
+    }
+
+
+
+    private void getBrokerNameAndDisplayDialog(){
+        String broker=mListingProperty.getBroker();
+        if(broker==null)
+            broker="the broker";
+        ErrorDialog dialog= ErrorDialog.newInstance(ErrorDialog.BROKER_ERROR_MESSAGE+broker);
+        dialog.show(getFragmentManager(),"no_phone_dialog");
     }
 
 

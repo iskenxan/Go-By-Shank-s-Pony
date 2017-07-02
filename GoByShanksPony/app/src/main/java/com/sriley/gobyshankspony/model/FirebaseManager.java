@@ -17,6 +17,7 @@ import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener
 import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseGetFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseUsertypeListener;
 import com.sriley.gobyshankspony.model.utils.Formatter;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.Map;
 public class FirebaseManager {
     public static final String USERS = "users";
     public static final String USER_FAVORITES="favorites";
-
+    public static final String USER_TYPE="userType";
 
     // user's email is used as unique key  for user database objects
 
@@ -65,6 +66,17 @@ public class FirebaseManager {
         String userKey = Formatter.convertEmailIntoUserkey(currentUser.getEmail());
 
         database.child(USERS).child(userKey).addListenerForSingleValueEvent(new FirebaseCallBacks.onCheckIfUserExistsCallBack(listener));
+    }
+
+
+
+    public static void getUsertype(FirebaseUsertypeListener listener){
+        FirebaseUser currentUser=FirebaseAuth.getInstance().getCurrentUser();
+        final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        String userkey=Formatter.convertEmailIntoUserkey(currentUser.getEmail());
+
+        database.child(USERS).child(userkey).child(USER_TYPE).addListenerForSingleValueEvent(new FirebaseCallBacks
+                .onUserTypeExtractCallBack(listener));
     }
 
 

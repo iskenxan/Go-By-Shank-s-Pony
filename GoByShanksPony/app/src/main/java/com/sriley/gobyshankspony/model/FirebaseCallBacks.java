@@ -13,6 +13,7 @@ import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener
 import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseGetFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseUsertypeListener;
 
 import java.util.ArrayList;
 
@@ -109,6 +110,29 @@ public class FirebaseCallBacks {
             }
         }
 
+
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    }
+
+    public static class onUserTypeExtractCallBack implements ValueEventListener{
+        FirebaseUsertypeListener mListener;
+
+        public onUserTypeExtractCallBack(FirebaseUsertypeListener listener){
+            mListener=listener;
+        }
+
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if(dataSnapshot.getValue()!=null){
+                String userType= (String) dataSnapshot.getValue();
+                mListener.onUsertypeExtracted(userType);
+            }
+        }
 
 
         @Override

@@ -11,11 +11,13 @@ import com.sriley.gobyshankspony.model.MyPreferenceManager;
 import com.sriley.gobyshankspony.model.PermissionManager;
 import com.sriley.gobyshankspony.model.PhoneCallManager;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseUsertypeListener;
 import com.sriley.gobyshankspony.model.interfaces.LocationPermissionListener;
+import com.sriley.gobyshankspony.model.utils.Formatter;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.model.utils.NavigationDrawerManager;
 
-public class ContentActivity extends AppCompatActivity implements FirebaseUserCheckListener {
+public class ContentActivity extends AppCompatActivity implements FirebaseUserCheckListener, FirebaseUsertypeListener {
 
     LocationPermissionListener mLocationPermissionListener;
 
@@ -50,7 +52,18 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
         if(isNew)
             FragmentFactory.startUserTypeFragment(this);
         else
-            FragmentFactory.startSearchResultFragment(this,1);
+            getUserTypeAndStartFragment();
+    }
+
+
+    private void getUserTypeAndStartFragment(){
+        FirebaseManager.getUsertype(this);
+    }
+
+
+    @Override
+    public void onUsertypeExtracted(String usertype) {
+      FragmentFactory.startFragmentBasedOnUserType(usertype,this);
     }
 
 
@@ -111,4 +124,6 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
     public void onBackPressed() {
         //Do nothing
     }
+
+
 }

@@ -102,7 +102,9 @@
                         <ImageView
                             android:layout_width="28dp"
                             android:layout_height="22dp"
-                            android:src="@drawable/toilet"/>
+                            android:src="@drawable/toilet"
+                            android:id="@+id/imageView"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
@@ -124,7 +126,7 @@
                 android:layout_marginTop="30dp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
-                android:layout_below="@id/SingleSearchResultNameTextView"
+                android:layout_below="@+id/SingleSearchResultAddressTextView"
                 android:id="@+id/SingleSearchResultAddressTextView"
                 android:layout_height="wrap_content"/>
 
@@ -155,7 +157,10 @@
                 android:padding="10dp"
                 fab:fab_colorNormal="@color/fab_color"
                 fab:fab_colorPressed="@color/text_color"
-                fab:fab_size="mini"/>
+                fab:fab_size="mini"
+                android:layout_centerVertical="true"
+                android:layout_alignRight="@+id/fabMenu"
+                android:layout_alignEnd="@+id/fabMenu"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
@@ -175,7 +180,11 @@
                 fab:fab_colorNormal="@color/fab_color"
                 fab:fab_colorPressed="@color/text_color"
                 fab:fab_size="mini"/>
+
+
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+
 
 
     </RelativeLayout>
