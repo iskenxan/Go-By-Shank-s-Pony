@@ -37,6 +37,7 @@ public class SelectApartmentTypeFragment extends Fragment {
         return view;
     }
 
+
     private void setupViewpager(){
         ApartmentTypeViewPagerAdapter adapter=new ApartmentTypeViewPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(adapter);

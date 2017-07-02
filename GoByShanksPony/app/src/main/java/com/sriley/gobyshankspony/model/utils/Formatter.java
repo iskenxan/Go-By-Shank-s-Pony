@@ -36,18 +36,6 @@ public class Formatter {
     }
 
 
-    public static ArrayList<Venue> removePartialAddressVenues(ArrayList<Venue> venues){
-        ArrayList<Venue> fullAddressVenues=new ArrayList<>();
-        for (Venue venue:venues){
-            if(!venue.getAddress().equals("")&&!venue.getCity().equals("")&&!venue.getState().equals(""))
-                fullAddressVenues.add(venue);
-        }
-
-        return fullAddressVenues;
-    }
-
-
-
     public static Place getPlaceFromLocation(Context context, Location location){
         Address address=getAddressFromLocation(context,location);
 

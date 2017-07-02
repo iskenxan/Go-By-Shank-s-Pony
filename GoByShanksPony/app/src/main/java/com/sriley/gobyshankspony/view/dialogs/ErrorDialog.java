@@ -15,7 +15,6 @@ import com.sriley.gobyshankspony.R;
 
 public class ErrorDialog extends DialogFragment implements View.OnClickListener {
 
-    public static final int SIGN_UP_ERROR=0;
 
     public static final String BROKER_ERROR_MESSAGE ="No phone number was found for the property.For more information about " + "the property contact ";
     public static final String SIGN_IN_ERROR_MESSAGE="Error occured while trying to\n sign in with your account" +
@@ -47,7 +46,7 @@ public class ErrorDialog extends DialogFragment implements View.OnClickListener 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.error_dialoh, container);
+        return inflater.inflate(R.layout.error_dialog, container);
     }
 
     @Override

@@ -8,21 +8,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
 import com.sriley.gobyshankspony.ContentActivity;
-import com.sriley.gobyshankspony.MainActivity;
+import com.sriley.gobyshankspony.LoginActivity;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.FacebookSignInManager;
 import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.GoogleSignInManager;
-import com.sriley.gobyshankspony.model.User;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignUpInfoRetrievedListener;
-import com.sriley.gobyshankspony.model.utils.RadioButtonSwitcher;
 import com.sriley.gobyshankspony.view.dialogs.ErrorDialog;
 import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
 
@@ -92,7 +89,7 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
     public void onResume() {
         super.onResume();
         mProgressBarDialog=new ProgressBarDialog();
-        mGoogleSignInManager=new GoogleSignInManager(mGoogleSignInButton, (MainActivity) getActivity(),this,mProgressBarDialog);
+        mGoogleSignInManager=new GoogleSignInManager(mGoogleSignInButton, (LoginActivity) getActivity(),this,mProgressBarDialog);
 
     }
 

@@ -6,14 +6,15 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseGetFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
+
+import java.util.ArrayList;
 
 public class FirebaseCallBacks {
 
@@ -77,6 +78,42 @@ public class FirebaseCallBacks {
                 mListener.onPropertyAddedToFavorites(true);
             else
                 mListener.onPropertyAddedToFavorites(false);
+        }
+    }
+
+
+    public static class onFavoriteExtractCallBack implements ValueEventListener{
+        FirebaseGetFavoritesListener mListener;
+
+
+        public onFavoriteExtractCallBack(FirebaseGetFavoritesListener listener){
+            mListener=listener;
+        }
+
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            Iterable<DataSnapshot> list = dataSnapshot.getChildren();
+            ArrayList<ListingProperty> favorites=new ArrayList<>();
+
+            addPropertiesToFavorites(list,favorites);
+            mListener.onFavoritesExtracted(favorites);
+        }
+
+
+
+        private void addPropertiesToFavorites(Iterable<DataSnapshot> firebaseList, ArrayList<ListingProperty> favorites){
+            for (DataSnapshot data:firebaseList){
+                ListingProperty property=data.getValue(ListingProperty.class);
+                favorites.add(property);
+            }
+        }
+
+
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
         }
     }
 }

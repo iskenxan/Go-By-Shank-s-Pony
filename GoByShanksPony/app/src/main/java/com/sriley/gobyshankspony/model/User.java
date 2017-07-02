@@ -17,13 +17,6 @@ public  class User {
         this.userType = userType;
     }
 
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
-    }
 
     public String getFullName() {
         return fullName;

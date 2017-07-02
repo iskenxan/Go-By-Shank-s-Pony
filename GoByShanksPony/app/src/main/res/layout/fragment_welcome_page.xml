@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:background="@drawable/background"
+              android:background="@drawable/bg"
               android:orientation="vertical">
 
     <LinearLayout
@@ -15,29 +15,22 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp">
 
-        <TextView
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingTop="20dp"
+            android:src="@drawable/app_title"
             android:gravity="center"
-            android:text="@string/app_name"
-            android:textColor="@color/fab_color"
-            android:textSize="30sp"
             android:layout_marginTop="20dp"
-            android:textStyle="bold"
             android:id="@+id/textView2"/>
 
-        <TextView
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.5"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/foot_print_icon"
             android:gravity="center"
-            android:lineSpacingMultiplier="1.2"
-            android:text="@string/welcome_page_text"
-            android:textColor="@android:color/white"
-            android:textSize="17sp"
-            android:textStyle="bold"
             android:id="@+id/textView"/>
     </LinearLayout>
 
@@ -60,15 +53,15 @@
                 android:layout_width="match_parent"
                 android:text="@string/common_signin_button_text_long"
                 android:layout_centerHorizontal="true"
-                android:layout_height="60dp" />
+                android:layout_height="65dp" />
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/SignUpFacebookSignUpbutton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:textSize="18sp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
+                android:paddingTop="17dp"
+                android:paddingBottom="17dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:layout_gravity="center_horizontal"

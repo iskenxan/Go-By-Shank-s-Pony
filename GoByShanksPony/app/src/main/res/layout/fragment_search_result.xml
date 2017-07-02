@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
+        android:gravity="center"
         android:id="@+id/searchResultLoadingImageContainer"
         android:layout_height="match_parent">
         <ImageView
@@ -20,9 +21,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="SEARCHING..."
-            android:textColor="@color/text_color"
-            android:textSize="25sp"
+            android:text="Searching for nearby properties..."
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
             android:gravity="center"
             android:layout_weight="1"/>
     </LinearLayout>

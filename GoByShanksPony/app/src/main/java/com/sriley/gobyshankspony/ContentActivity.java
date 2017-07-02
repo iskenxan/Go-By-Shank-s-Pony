@@ -1,23 +1,19 @@
 package com.sriley.gobyshankspony;
 
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.MyPreferenceManager;
-import com.sriley.gobyshankspony.model.PhoneCallManager;
-import com.sriley.gobyshankspony.model.User;
-import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
-import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.model.PermissionManager;
+import com.sriley.gobyshankspony.model.PhoneCallManager;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
 import com.sriley.gobyshankspony.model.interfaces.LocationPermissionListener;
-import com.sriley.gobyshankspony.view.NavigationDrawerManager;
+import com.sriley.gobyshankspony.model.utils.FragmentFactory;
+import com.sriley.gobyshankspony.model.utils.NavigationDrawerManager;
 
 public class ContentActivity extends AppCompatActivity implements FirebaseUserCheckListener {
 
@@ -34,13 +30,7 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
         mDrawerManager=new NavigationDrawerManager(this);
         mDrawerManager.setupDrawer();
 
-        FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
-
-        User user=new User();
-        user.setEmail(firebaseUser.getEmail());
-        user.setFullName(firebaseUser.getDisplayName());
-
-        FirebaseManager.checkIfNewUser(user,this);
+        FirebaseManager.checkIfNewUser(this);
     }
 
 
@@ -76,14 +66,16 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
         if(requestCode== PermissionManager.LOCATION_PERMISSION_CODE){
            handleLocationPermissionRequest(grantResults);
         }
-        else if(requestCode==PermissionManager.CALL_REPMISSION_REQUEST){
+        else if(requestCode==PermissionManager.CALL_PERMISSION_REQUEST){
             handleCallPermissionRequest(grantResults);
         }
 
     }
 
+
+
     private void handleCallPermissionRequest(int[] grantResults){
-        if(grantResults!=null&&grantResults[0]== PackageManager.PERMISSION_GRANTED){
+        if(PermissionManager.isPermissionGranted(grantResults)){
             String phoneNumber= MyPreferenceManager.getPhoneNumber(this);
             PhoneCallManager.callNumber(phoneNumber,this);
         }
@@ -92,7 +84,7 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
 
 
     private void handleLocationPermissionRequest(int[] grantResults){
-        if(grantResults!=null&&grantResults[0]== PackageManager.PERMISSION_GRANTED){
+        if(PermissionManager.isPermissionGranted(grantResults)){
             mLocationPermissionListener.onLocationPermissionResult(true);
         }
         else
@@ -106,6 +98,8 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
         mDrawerManager.onConfigurationChanged(newConfig);
     }
 
+
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -115,5 +109,6 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
 
     @Override
     public void onBackPressed() {
+        //Do nothing
     }
 }

@@ -2,43 +2,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
+              android:paddingLeft="20dp"
+              android:background="@android:color/white"
+              android:paddingRight="20dp"
               android:layout_height="match_parent">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome!"
+        android:text="Welcome"
         android:gravity="center"
-        android:textSize="20sp"
+        android:id="@+id/UserTypeWelcomeText"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"/>
-    <TextView
+        android:layout_marginTop="60dp"/>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:text="Please tell us who are you:"
-        android:gravity="center"/>
-
-
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
+        android:layout_height="0dp"
         android:gravity="center"
-        android:spinnerMode="dropdown"
-        android:padding="10dp"
-        android:layout_height="40dp"
-        android:id="@+id/UserTypeSpinner"/>
+        android:orientation="vertical"
+        android:layout_weight="2.5">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:text="Are you a:"
+            android:gravity="left"/>
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:spinnerMode="dropdown"
+            android:background="@drawable/spinner_bg"
+            android:padding="10dp"
+            android:layout_height="45dp"
+            android:id="@+id/UserTypeSpinner"/>
+    </LinearLayout>
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="50dp"
-        android:textSize="18sp"
-        android:id="@+id/UserTypeNextButton"
-        android:textColor="@android:color/white"
-        android:text="NEXT"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="70dp"
-        android:background="@color/text_color_light"/>
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textSize="18sp"
+            android:id="@+id/UserTypeNextButton"
+            android:textColor="@android:color/white"
+            android:text="NEXT"
+            android:layout_marginLeft="70dp"
+            android:layout_marginRight="70dp"
+            android:background="@drawable/action_button_light"/>
+    </LinearLayout>
+
 </LinearLayout>

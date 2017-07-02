@@ -1,17 +1,19 @@
-package com.sriley.gobyshankspony.model;
+package com.sriley.gobyshankspony.model.HTMLViewers;
 
 import android.webkit.JavascriptInterface;
 
+import com.sriley.gobyshankspony.model.JSOUPManager;
+import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.interfaces.ListingScrapeRequestListener;
 
 import java.util.ArrayList;
 
 
-public  class ListingHTMLViewer {
+public  class ListingHTMLViewer extends HTMLViewer {
 
     private ListingScrapeRequestListener mListingScrapeRequestListener;
 
-    ListingHTMLViewer(ListingScrapeRequestListener listener) {
+    public ListingHTMLViewer(ListingScrapeRequestListener listener) {
         mListingScrapeRequestListener =listener;
     }
 

@@ -10,14 +10,14 @@ import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.model.GoogleSignInManager;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignInIntentListener;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private GoogleSignInIntentListener mGoogleSignInIntentListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         FragmentFactory.startWelcomeFragment(this);
     }

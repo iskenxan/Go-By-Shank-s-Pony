@@ -1,9 +1,8 @@
-package com.sriley.gobyshankspony.view;
+package com.sriley.gobyshankspony.model.utils;
 
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -15,9 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.sriley.gobyshankspony.MainActivity;
+import com.sriley.gobyshankspony.LoginActivity;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 
 
 public class NavigationDrawerManager implements AdapterView.OnItemClickListener {
@@ -41,8 +39,6 @@ public class NavigationDrawerManager implements AdapterView.OnItemClickListener 
 
 
     public boolean onOptionsSelected(MenuItem item){
-        int id = item.getItemId();
-
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
@@ -92,11 +88,10 @@ public class NavigationDrawerManager implements AdapterView.OnItemClickListener 
 
         else if(position==1){
             FragmentFactory.startFavoritesFragment(mActivity);
-
         }
         else if(position==2){
             FirebaseAuth.getInstance().signOut();
-            Intent intent=new Intent(mActivity,MainActivity.class);
+            Intent intent=new Intent(mActivity,LoginActivity.class);
             mActivity.startActivity(intent);
         }
     }

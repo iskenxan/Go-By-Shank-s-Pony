@@ -13,7 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.sriley.gobyshankspony.MainActivity;
+import com.sriley.gobyshankspony.LoginActivity;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignInIntentListener;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignUpInfoRetrievedListener;
@@ -31,10 +31,10 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
     private ProgressBarDialog mProgressBarDialog;
 
     private SignInButton mSignInButton;
-    private MainActivity mActivity;
+    private LoginActivity mActivity;
 
 
-    public GoogleSignInManager(SignInButton signInButton, MainActivity activity, GoogleSignUpInfoRetrievedListener
+    public GoogleSignInManager(SignInButton signInButton, LoginActivity activity, GoogleSignUpInfoRetrievedListener
             listener, ProgressBarDialog progressBarDialog){
         mSignInButton=signInButton;
         mSignUpInfoRetrievedListener=listener;

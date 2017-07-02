@@ -106,10 +106,18 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
     public void onCallFabClicked() {
 
         mFabMenu.collapse();
-        mProgressBarDialog=new ProgressBarDialog();
-        mProgressBarDialog.show(getFragmentManager(),"progress_bar");
+        showProgressBar();
         ScrapeManager.getPropertyPhone(mWebView,mListingProperty.getDetailsUrl(),this);
     }
+
+
+
+    private void showProgressBar(){
+        mProgressBarDialog=new ProgressBarDialog();
+        mProgressBarDialog.show(getFragmentManager(),"progress_bar");
+    }
+
+
 
     @Override
     public void onPhoneRetrieved(String phone) {
@@ -123,16 +131,22 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
         }
     }
 
+
+
     @OnClick(R.id.favoritesFabButton)
     public void onFavoritesFabClicked() {
         mFabMenu.collapse();
         FirebaseManager.savePropertyInFavorites(mListingProperty, this);
     }
 
+
+
     @Override
     public void onPropertyAddedToFavorites(boolean success) {
         if (success)
             Toast.makeText(getContext(), "Property was added to your favorites", Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(getContext(), "Connection error. Check your internet connection", Toast.LENGTH_LONG).show();
     }
 
 

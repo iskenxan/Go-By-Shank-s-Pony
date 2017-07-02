@@ -1,5 +1,6 @@
 package com.sriley.gobyshankspony.view.fragments;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.sriley.gobyshankspony.LoginActivity;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.MyLocationManager;
@@ -20,7 +23,6 @@ import com.sriley.gobyshankspony.model.ScrapeManager;
 import com.sriley.gobyshankspony.model.interfaces.ListingScrapeRequestListener;
 import com.sriley.gobyshankspony.model.interfaces.TimerListener;
 import com.sriley.gobyshankspony.model.interfaces.UserLocationListener;
-import com.sriley.gobyshankspony.model.utils.AsyncTimerTask;
 import com.sriley.gobyshankspony.model.utils.Formatter;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.view.adapters.ListingViewPagerAdapter;
@@ -45,8 +47,6 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
     ArrayList<ListingProperty> mPropertyList =new ArrayList<>();
     WebView mWebView;
 
-    AsyncTimerTask mTimerTask;
-
 
     @Nullable
     @Override
@@ -55,11 +55,26 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
         ButterKnife.bind(this,view);
 
         mMyLocationManager=new MyLocationManager(getActivity(),this);
-        mMyLocationManager.checkPermissionAndRequestLocation();
+        checkIfLocationServiceOn();
         setActionBarTitle("GO BY SHANK'S PONY");
 
         return view;
     }
+
+
+
+    private void checkIfLocationServiceOn(){
+       boolean isServiceOn= mMyLocationManager.checkIfLocationServicesAreEnabled();
+        if(isServiceOn)
+            mMyLocationManager.checkPermissionAndRequestLocation();
+        else{
+            Toast.makeText(getContext(),"Turn on location services before proceeding",Toast.LENGTH_LONG).show();
+            Intent intent=new Intent(getActivity(),LoginActivity.class);
+            getActivity().startActivity(intent);
+        }
+    }
+
+
 
 
     @Override
@@ -110,7 +125,7 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
     Runnable setupViewPagerRunnable=new Runnable() {
         @Override
         public void run() {
-            setActionBarTitle("IT'S A MATCH!");
+            setActionBarTitle("HELLO!");
             mLoadingImageContainer.setVisibility(View.INVISIBLE);
             setupViewPager();
         }

@@ -42,6 +42,14 @@ public class MyLocationManager implements LocationListener, LocationPermissionLi
 
 
 
+    public boolean checkIfLocationServicesAreEnabled(){
+       boolean isNetworkProviderEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        return isNetworkProviderEnabled;
+    }
+
+
+
     public void removeLocationUpdates(){
         if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager
                 .PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission

@@ -26,9 +26,6 @@ import java.util.Map;
 
 public class FirebaseManager {
     public static final String USERS = "users";
-    public static final String USER_EMAIL = "email";
-    public static final String USER_NAME="user_name";
-    public static final String USER_TYPE = "user_type";
     public static final String USER_FAVORITES="favorites";
 
 
@@ -62,25 +59,20 @@ public class FirebaseManager {
     }
 
 
-    public static void checkIfNewUser(User user, final FirebaseUserCheckListener listener){
+    public static void checkIfNewUser( final FirebaseUserCheckListener listener){
+        FirebaseUser currentUser =FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        String userKey = Formatter.convertEmailIntoUserkey(user.getEmail());
+        String userKey = Formatter.convertEmailIntoUserkey(currentUser.getEmail());
 
-        database.child(USERS).child(userKey).addListenerForSingleValueEvent(new FirebaseCallBacks
-                .onCheckIfUserExistsCallBack(listener));
+        database.child(USERS).child(userKey).addListenerForSingleValueEvent(new FirebaseCallBacks.onCheckIfUserExistsCallBack(listener));
     }
 
 
     public static void saveUserDetails(User user) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         String userKey = Formatter.convertEmailIntoUserkey(user.getEmail());
-        Map<String,String> userDetailsMap=new HashMap<>();
 
-        userDetailsMap.put(USER_NAME,user.getFullName());
-        userDetailsMap.put(USER_EMAIL,user.getEmail());
-        userDetailsMap.put(USER_TYPE,user.getUserType());
-
-        database.child(USERS).child(userKey).setValue(userDetailsMap);
+        database.child(USERS).child(userKey).setValue(user);
     }
 
 
@@ -89,26 +81,10 @@ public class FirebaseManager {
         final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         String userKey = Formatter.convertEmailIntoUserkey(currentUser.getEmail());
 
-        database.child(USERS).child(userKey).child(USER_FAVORITES).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue()!=null){
-                    Iterable<DataSnapshot> list = dataSnapshot.getChildren();
-                    ArrayList<ListingProperty> properties=new ArrayList<ListingProperty>();
-                    for (DataSnapshot data:list){
-                        ListingProperty property=data.getValue(ListingProperty.class);
-                        properties.add(property);
-                    }
-                    listener.onFavoritesExtracted(properties);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        database.child(USERS).child(userKey).child(USER_FAVORITES).addValueEventListener(new FirebaseCallBacks.onFavoriteExtractCallBack(listener));
     }
+
+
 
     public static void savePropertyInFavorites(ListingProperty property, FirebaseFavoritesListener listener){
         FirebaseUser currentUser =FirebaseAuth.getInstance().getCurrentUser();

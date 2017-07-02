@@ -10,4 +10,6 @@
     <color name="text_color_light">#f44336</color>
     <color name="text_color_price">#8e1616</color>
     <color name="fab_color">#D50000</color>
+    <color name="bright_red">#FD0101</color>
+    <color name="light_gray">#ededed</color>
 </resources>

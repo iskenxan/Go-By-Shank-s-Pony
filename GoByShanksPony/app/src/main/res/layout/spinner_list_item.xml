@@ -5,6 +5,5 @@
         android:layout_height="50dp"
         android:text="test"
         android:gravity="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_color"/>
+        android:textSize="20sp"
+        android:textColor="@android:color/black"/>
