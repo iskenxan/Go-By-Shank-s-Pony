@@ -81,7 +81,7 @@ public class SingleFavoriteFragment extends Fragment implements PhoneScrapeReque
         mAddressTextView.setText(mListingProperty.getAddress() + ", " + mListingProperty.getCity() + ", " + mListingProperty.getState());
         mBedroomsTextView.setText(mListingProperty.getBedrooms());
         mBathroomsTextView.setText(mListingProperty.getBathrooms());
-        mRentTextView.setText(mListingProperty.getRent());
+        mRentTextView.setText(mListingProperty.getPrice());
         mAddressTextView.setText(mListingProperty.getAddress() + ", " + mListingProperty.getCity() + ", " + mListingProperty.getState());
         loadImage(mListingProperty.getImageUrl());
     }

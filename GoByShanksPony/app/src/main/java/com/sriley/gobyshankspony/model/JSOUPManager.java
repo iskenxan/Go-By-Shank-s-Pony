@@ -77,7 +77,7 @@ public class JSOUPManager {
     private static void getRentPrice(Element listingElement,ListingProperty listingProperty){
         Element priceElement = listingElement.select("div.srp-item-price").get(0);
         String price = priceElement.text();
-        listingProperty.setRent(price.replace("/month","").replace("$","").replace(",",""));
+        listingProperty.setPrice(price.replace("/month","").replace("$","").replace(",",""));
     }
 
 

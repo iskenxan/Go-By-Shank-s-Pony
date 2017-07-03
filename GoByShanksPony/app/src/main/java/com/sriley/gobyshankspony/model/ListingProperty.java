@@ -6,11 +6,22 @@ public class ListingProperty extends Place {
     private String name;
     private String bedrooms;
     private String bathrooms;
-    private String rent;
+    private String price;
     private String imageUrl;
     private String detailsUrl;
     private String broker;
+    private String managerUsername="";
+    private String propertyType;
+    private String phoneNumber;
 
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public String getBroker() {
         return broker;
@@ -71,11 +82,29 @@ public class ListingProperty extends Place {
         this.bathrooms = bathrooms;
     }
 
-    public String getRent() {
-        return rent;
+    public String getPrice() {
+        return price;
     }
 
-    public void setRent(String rent) {
-        this.rent = rent;
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+
+    public String getManagerUsername() {
+        return managerUsername;
+    }
+
+    public void setManagerUsername(String managerUsername) {
+        this.managerUsername = managerUsername;
+    }
+
+
+    public String getPropertyType() {
+        return propertyType;
+    }
+
+    public void setPropertyType(String propertyType) {
+        this.propertyType = propertyType;
     }
 }

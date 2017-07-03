@@ -12,14 +12,21 @@ import android.view.ViewGroup;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.sriley.gobyshankspony.R;
+import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.sriley.gobyshankspony.model.FirebaseManagerListingRecord;
+import com.sriley.gobyshankspony.model.ListingProperty;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractManagerListingRecordsListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractSinglePropertyListener;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class ManagerPropertyListFragment extends Fragment {
+public class ManagerPropertyListFragment extends Fragment implements FirebaseExtractManagerListingRecordsListener, FirebaseExtractSinglePropertyListener {
 
 
 
@@ -28,12 +35,17 @@ public class ManagerPropertyListFragment extends Fragment {
     @BindView(R.id.ManagerListAddPropertyFab)FloatingActionButton mAddPropertyActionButton;
 
 
+    ArrayList<FirebaseManagerListingRecord> mListingRecords;
+    ArrayList<ListingProperty> mProperties;
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_manager_list,container,false);
         ButterKnife.bind(this,view);
-
+        FirebaseManager.getManagedPropertyRecords(this);
         return view;
     }
 
@@ -44,4 +56,32 @@ public class ManagerPropertyListFragment extends Fragment {
         FragmentFactory.startAddPropertyFragment((AppCompatActivity) getActivity());
     }
 
+
+    @Override
+    public void onListingRecordsExtracted(ArrayList<FirebaseManagerListingRecord> listingRecords) {
+        mListingRecords=listingRecords;
+        extractProperties();
+    }
+
+
+    private void extractProperties(){
+        for (FirebaseManagerListingRecord listingRecord:mListingRecords){
+            FirebaseManager.getManagedProperty(this,listingRecord);
+        }
+    }
+
+
+
+    @Override
+    public void onPropertyExtracted(ListingProperty property) {
+        mProperties.add(property);
+        if(mProperties.size()==mListingRecords.size()){
+            setupRecyclerView();
+            //TODO: implement setupRecyclerView
+        }
+    }
+
+    private void setupRecyclerView(){
+
+    }
 }

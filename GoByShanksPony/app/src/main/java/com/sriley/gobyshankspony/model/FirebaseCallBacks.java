@@ -4,14 +4,21 @@ package com.sriley.gobyshankspony.model;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.UploadTask;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractManagerListingRecordsListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractSinglePropertyListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
-import com.sriley.gobyshankspony.model.interfaces.FirebaseGetFavoritesListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractPropertiesListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyPhotoUploadListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyRegisteredListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUsertypeListener;
 
@@ -69,13 +76,13 @@ public class FirebaseCallBacks {
 
         FirebaseFavoritesListener mListener;
 
-        public onFavoritesAddCallBack(FirebaseFavoritesListener listener){
-            mListener=listener;
+        public onFavoritesAddCallBack(FirebaseFavoritesListener listener) {
+            mListener = listener;
         }
 
         @Override
         public void onComplete(@NonNull Task<Void> task) {
-            if(task.isSuccessful())
+            if (task.isSuccessful())
                 mListener.onPropertyAddedToFavorites(true);
             else
                 mListener.onPropertyAddedToFavorites(false);
@@ -83,33 +90,32 @@ public class FirebaseCallBacks {
     }
 
 
-    public static class onFavoriteExtractCallBack implements ValueEventListener{
-        FirebaseGetFavoritesListener mListener;
+
+    public static class onFavoriteExtractCallBack implements ValueEventListener {
+        FirebaseExtractPropertiesListener mListener;
 
 
-        public onFavoriteExtractCallBack(FirebaseGetFavoritesListener listener){
-            mListener=listener;
+        public onFavoriteExtractCallBack(FirebaseExtractPropertiesListener listener) {
+            mListener = listener;
         }
 
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             Iterable<DataSnapshot> list = dataSnapshot.getChildren();
-            ArrayList<ListingProperty> favorites=new ArrayList<>();
+            ArrayList<ListingProperty> favorites = new ArrayList<>();
 
-            addPropertiesToFavorites(list,favorites);
-            mListener.onFavoritesExtracted(favorites);
+            addPropertiesToFavorites(list, favorites);
+            mListener.onPropertiesExtracted(favorites);
         }
 
 
-
-        private void addPropertiesToFavorites(Iterable<DataSnapshot> firebaseList, ArrayList<ListingProperty> favorites){
-            for (DataSnapshot data:firebaseList){
-                ListingProperty property=data.getValue(ListingProperty.class);
+        private void addPropertiesToFavorites(Iterable<DataSnapshot> firebaseList, ArrayList<ListingProperty> favorites) {
+            for (DataSnapshot data : firebaseList) {
+                ListingProperty property = data.getValue(ListingProperty.class);
                 favorites.add(property);
             }
         }
-
 
 
         @Override
@@ -118,18 +124,20 @@ public class FirebaseCallBacks {
         }
     }
 
-    public static class onUserTypeExtractCallBack implements ValueEventListener{
+
+
+    public static class onUserTypeExtractCallBack implements ValueEventListener {
         FirebaseUsertypeListener mListener;
 
-        public onUserTypeExtractCallBack(FirebaseUsertypeListener listener){
-            mListener=listener;
+        public onUserTypeExtractCallBack(FirebaseUsertypeListener listener) {
+            mListener = listener;
         }
 
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            if(dataSnapshot.getValue()!=null){
-                String userType= (String) dataSnapshot.getValue();
+            if (dataSnapshot.getValue() != null) {
+                String userType = (String) dataSnapshot.getValue();
                 mListener.onUsertypeExtracted(userType);
             }
         }
@@ -140,4 +148,114 @@ public class FirebaseCallBacks {
 
         }
     }
+
+
+
+    public static class onPropertyRegisteredCallBack implements OnCompleteListener<Void> {
+
+        FirebasePropertyRegisteredListener mListener;
+
+
+        public onPropertyRegisteredCallBack(FirebasePropertyRegisteredListener listener) {
+            mListener = listener;
+        }
+
+
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if (task.isSuccessful())
+                mListener.onPropertyRegistered(true);
+            else
+                mListener.onPropertyRegistered(false);
+        }
+    }
+
+
+
+    public static class onFileUploadCallback implements OnSuccessListener<UploadTask.TaskSnapshot>, OnFailureListener {
+        ListingProperty mProperty;
+        FirebasePropertyPhotoUploadListener mListener;
+
+
+        public onFileUploadCallback(FirebasePropertyPhotoUploadListener listener, ListingProperty property) {
+            mListener = listener;
+            mProperty = property;
+        }
+
+
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            mListener.onUploadFinished(false);
+        }
+
+
+        @Override
+        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            String photoUrl = taskSnapshot.getDownloadUrl().toString();
+            FirebaseManager.addPhotoUrlToListing(mProperty, photoUrl);
+            FirebaseManager.addListingToManagerList(mProperty);
+
+            mListener.onUploadFinished(true);
+        }
+
+    }
+
+
+
+    public static class onManagerListingRecordsExtractedCallBack implements ValueEventListener{
+
+        FirebaseExtractManagerListingRecordsListener mListener;
+
+
+        public onManagerListingRecordsExtractedCallBack(FirebaseExtractManagerListingRecordsListener listener){
+            mListener=listener;
+        }
+
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshots) {
+            if(dataSnapshots.getChildren()!=null){
+                ArrayList<FirebaseManagerListingRecord> listingRecords=new ArrayList<>();
+                for (DataSnapshot dataSnapshot:dataSnapshots.getChildren()){
+                    FirebaseManagerListingRecord listingRecord= (FirebaseManagerListingRecord) dataSnapshot.getValue();
+                    listingRecords.add(listingRecord);
+                }
+                mListener.onListingRecordsExtracted(listingRecords);
+            }
+        }
+
+
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    }
+
+
+    public static class onManagedPropertyExtractCallback implements ValueEventListener{
+        private FirebaseExtractSinglePropertyListener mListener;
+
+
+        public onManagedPropertyExtractCallback(FirebaseExtractSinglePropertyListener listener){
+            mListener=listener;
+        }
+
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if(dataSnapshot.getValue()!=null){
+                ListingProperty property= (ListingProperty) dataSnapshot.getValue();
+                mListener.onPropertyExtracted(property);
+            }
+        }
+
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    }
+
+
 }

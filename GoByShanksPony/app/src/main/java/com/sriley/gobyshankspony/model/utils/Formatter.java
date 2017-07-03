@@ -5,13 +5,17 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
+import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.Place;
 import com.sriley.gobyshankspony.model.Venue;
 import com.sriley.gobyshankspony.model.ListingProperty;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +23,19 @@ public class Formatter {
     public static final String USERTYPE_RENTER="renter";
     public static final String USERTYPE_LANDLORD="landlord";
     public static final String USERTYPE_AGENT="agent";
+
+
+
+    public static void setupSpinner(List<String> collection, Spinner spinner){
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(spinner.getContext(), R.layout.spinner_list_item, collection);
+        spinner.setAdapter(adapter);
+    }
+
+
+    public static void setupSpinner(String[] collection, Spinner spinner){
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(spinner.getContext(), R.layout.spinner_list_item, collection);
+        spinner.setAdapter(adapter);
+    }
 
 
 

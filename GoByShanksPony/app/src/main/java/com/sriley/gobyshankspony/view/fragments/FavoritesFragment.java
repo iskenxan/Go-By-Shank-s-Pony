@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
-import com.sriley.gobyshankspony.model.interfaces.FirebaseGetFavoritesListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractPropertiesListener;
 import com.sriley.gobyshankspony.model.utils.Formatter;
 import com.sriley.gobyshankspony.view.adapters.ListingViewPagerAdapter;
 
@@ -23,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class FavoritesFragment extends Fragment implements FirebaseGetFavoritesListener {
+public class FavoritesFragment extends Fragment implements FirebaseExtractPropertiesListener {
 
     @BindView(R.id.favoritesViewPager)ViewPager mViewPager;
     @BindView(R.id.favoritesEmptyTextContainer)LinearLayout mEmptyContainer;
@@ -48,7 +48,7 @@ public class FavoritesFragment extends Fragment implements FirebaseGetFavoritesL
 
 
     @Override
-    public void onFavoritesExtracted(ArrayList<ListingProperty> favorites) {
+    public void onPropertiesExtracted(ArrayList<ListingProperty> favorites) {
         mPropertyList=favorites;
         if(favorites.size()>0){
             mEmptyContainer.setVisibility(View.INVISIBLE);

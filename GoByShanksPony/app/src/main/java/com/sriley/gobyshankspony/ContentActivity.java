@@ -1,6 +1,8 @@
 package com.sriley.gobyshankspony;
 
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -12,14 +14,18 @@ import com.sriley.gobyshankspony.model.PermissionManager;
 import com.sriley.gobyshankspony.model.PhoneCallManager;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUsertypeListener;
+import com.sriley.gobyshankspony.model.interfaces.GalleryImageSelectedListener;
 import com.sriley.gobyshankspony.model.interfaces.LocationPermissionListener;
 import com.sriley.gobyshankspony.model.utils.Formatter;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
+import com.sriley.gobyshankspony.model.utils.GalleryBrowser;
 import com.sriley.gobyshankspony.model.utils.NavigationDrawerManager;
 
 public class ContentActivity extends AppCompatActivity implements FirebaseUserCheckListener, FirebaseUsertypeListener {
 
     LocationPermissionListener mLocationPermissionListener;
+    GalleryImageSelectedListener mGalleryImageSelectedListener;
+
 
     NavigationDrawerManager mDrawerManager;
 
@@ -71,6 +77,24 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
     public void setLocationPermissionListener(LocationPermissionListener listener){
         mLocationPermissionListener=listener;
     }
+
+
+    public void setGalleryImageSelectedListener(GalleryImageSelectedListener listener){
+        mGalleryImageSelectedListener=listener;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            if(requestCode== GalleryBrowser.SELECT_PICTURE_INTENT){
+                Uri selectedImageUri=data.getData();
+                mGalleryImageSelectedListener.onImageSelected(selectedImageUri);
+            }
+        }
+    }
+
 
 
     @Override

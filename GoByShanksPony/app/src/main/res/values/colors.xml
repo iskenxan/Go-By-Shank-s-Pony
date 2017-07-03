@@ -12,4 +12,5 @@
     <color name="fab_color">#D50000</color>
     <color name="bright_red">#FD0101</color>
     <color name="light_gray">#ededed</color>
+    <color name="hint_color">#d7d7d7</color>
 </resources>

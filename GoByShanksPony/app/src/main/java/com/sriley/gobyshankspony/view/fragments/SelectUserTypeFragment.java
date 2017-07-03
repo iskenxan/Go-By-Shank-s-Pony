@@ -44,10 +44,9 @@ public class SelectUserTypeFragment extends Fragment {
 
     private void setupUserTypeSpinner(){
         String[] userTypes=new String[]{"Renter","Landlord or Manager","Agent or Broker"};
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(getContext(),R.layout.spinner_list_item,
-                userTypes);
-        mUserTypeSpinner.setAdapter(adapter);
+        Formatter.setupSpinner(userTypes,mUserTypeSpinner);
     }
+
 
 
     @OnClick(R.id.UserTypeNextButton)
