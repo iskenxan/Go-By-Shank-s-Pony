@@ -16,20 +16,22 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 import com.sriley.gobyshankspony.ContentActivity;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
-import com.sriley.gobyshankspony.model.PhoneCallManager;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyPhotoUploadListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyRegisteredListener;
 import com.sriley.gobyshankspony.model.interfaces.GalleryImageSelectedListener;
 import com.sriley.gobyshankspony.model.utils.EmptyFieldsChecker;
 import com.sriley.gobyshankspony.model.utils.Formatter;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
+import com.sriley.gobyshankspony.model.utils.GSONFactory;
 import com.sriley.gobyshankspony.model.utils.GalleryBrowser;
 import com.sriley.gobyshankspony.model.utils.StatesHashmap;
 import com.sriley.gobyshankspony.view.dialogs.ErrorDialog;
+import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +43,11 @@ import butterknife.OnClick;
 
 
 public class AddNewPropertyFragment extends Fragment implements FirebasePropertyRegisteredListener, GalleryImageSelectedListener, FirebasePropertyPhotoUploadListener {
+
+    public static final String PROPERTY_ARGS = "property";
+    public static final String MESSAGE_ERROR="There was an error saving the property. Please try again.";
+    public static final String MESSAGE_SUCCESS="Property was successfully saved";
+
 
     @BindView(R.id.AddPropertyUploadPhotoButton)
     Button mUploadPhotoButton;
@@ -73,7 +80,15 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
     LinearLayout mMainContainer;
 
     Uri mUploadedImageUri;
-    ListingProperty mProperty;
+    ListingProperty mProperty=new ListingProperty();
+    ProgressBarDialog mProgressBarDialog;
+
+
+    List<String> mStatesList;
+    List<String> mPropertyTypeList;
+    List<String> mRoomNumbersList;
+
+    boolean mNewPhotoUploaded = false;
 
 
     @Nullable
@@ -82,29 +97,73 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
         View view = inflater.inflate(R.layout.fragment_add_new_property, container, false);
         ButterKnife.bind(this, view);
 
+        setupSpinnerLists();
         addListeners();
         setupSpinners();
+        extractArgsProperty();
+
+
 
         return view;
     }
+
+
+
+    private void setupSpinnerLists(){
+        mStatesList = new ArrayList<>(StatesHashmap.getAbreviationHashMap().values());
+        Collections.sort(mStatesList);
+        mRoomNumbersList = Formatter.getRoomNumbersList();
+        mPropertyTypeList = Formatter.getPropertyTypeList();
+    }
+
+
+    private void extractArgsProperty() {
+        if(getArguments()!=null){
+            String propertyStr = getArguments().getString(PROPERTY_ARGS, null);
+            ListingProperty property = GSONFactory.convertStringToListingProperty(propertyStr);
+            mProperty = property;
+            FirebaseManager.removeListingPropertyFromDatabase(property,null);
+            populateViews();
+        }
+    }
+
 
     private void addListeners() {
         ContentActivity activity = (ContentActivity) getActivity();
         activity.setGalleryImageSelectedListener(this);
     }
 
+
+
     private void setupSpinners() {
-        List<String> states = new ArrayList<>(StatesHashmap.getAbreviationHashMap().values());
-        Collections.sort(states);
-        Formatter.setupSpinner(states, mStateSpinner);
-
-        String[] propertyType = new String[]{"Rental", "For Sale"};
-        Formatter.setupSpinner(propertyType, mPropertyTypeSpinner);
-
-        String[] roomsNumbers = new String[]{"0", "1", "2", "3", "4", "5"};
-        Formatter.setupSpinner(roomsNumbers, mBathroomSpinner);
-        Formatter.setupSpinner(roomsNumbers, mBedroomsSpinner);
+        Formatter.setupSpinner(mStatesList, mStateSpinner);
+        Formatter.setupSpinner(mPropertyTypeList, mPropertyTypeSpinner);
+        Formatter.setupSpinner(mRoomNumbersList, mBathroomSpinner);
+        Formatter.setupSpinner(mRoomNumbersList, mBedroomsSpinner);
     }
+
+
+    private void populateViews() {
+        Picasso.with(getContext()).load(mProperty.getImageUrl()).into(mImageView);
+
+        mNameEditText.setText(mProperty.getName());
+        mAddressEditText.setText(mProperty.getAddress());
+        mCityEditText.setText(mProperty.getCity());
+        mPostalCodeEditText.setText(mProperty.getZip());
+        mPriceEditText.setText(mProperty.getPrice());
+        mPhonenumberEditText.setText(mProperty.getPhoneNumber());
+
+        int stateIndex = mStatesList.indexOf(mProperty.getState());
+        int propertyTypeIndex=mPropertyTypeList.indexOf(mProperty.getPropertyType());
+        int bedroomNumIndex=mRoomNumbersList.indexOf(mProperty.getBedrooms());
+        int bathroomNumIndex=mRoomNumbersList.indexOf(mProperty.getBathrooms());
+
+        mStateSpinner.setSelection(stateIndex);
+        mPropertyTypeSpinner.setSelection(propertyTypeIndex);
+        mBedroomsSpinner.setSelection(bedroomNumIndex);
+        mBathroomSpinner.setSelection(bathroomNumIndex);
+    }
+
 
 
     @OnClick(R.id.AddPropertyUploadPhotoButton)
@@ -115,16 +174,22 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
 
     @Override
     public void onImageSelected(Uri imageUri) {
-        if (imageUri != null)
+        if (imageUri != null) {
             mUploadedImageUri = imageUri;
-        mImageView.setImageURI(mUploadedImageUri);
+            mImageView.setImageURI(mUploadedImageUri);
+            mNewPhotoUploaded=true;
+        }
     }
+
 
 
     @OnClick(R.id.AddPropertySaveButton)
     public void onSaveButtonClicked() {
         boolean allFieldsPopulated = EmptyFieldsChecker.areAllFieldsPopulated(mMainContainer);
         if (allFieldsPopulated) {
+            mProgressBarDialog = new ProgressBarDialog();
+            mProgressBarDialog.show(getFragmentManager(), "progress_bar");
+
             createPropertyFromUserInput();
             FirebaseManager.registerProperty(mProperty, this);
         } else
@@ -134,42 +199,51 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
 
     @Override
     public void onPropertyRegistered(boolean success) {
-        if (success)
+        if(success&&mNewPhotoUploaded)
             FirebaseManager.savePropertyPhoto(mProperty, mUploadedImageUri, this);
-        else {
-            Toast.makeText(getContext(), "There was an error saving the property. Please try again.", Toast.LENGTH_LONG).show();
-            FragmentFactory.startManagerPropertyListFragment((AppCompatActivity) getActivity());
-        }
+        else if (success&&!mNewPhotoUploaded)
+            showMessageAndStartManagerFragment(MESSAGE_SUCCESS);
+        else if(!success)
+            showMessageAndStartManagerFragment(MESSAGE_ERROR);
     }
+
+
+
+    private void showMessageAndStartManagerFragment(String message){
+        mProgressBarDialog.dismiss();
+        Toast.makeText(getContext(),message, Toast.LENGTH_LONG).show();
+        FragmentFactory.startManagerPropertyListFragment((AppCompatActivity) getActivity());
+    }
+
 
 
     @Override
     public void onUploadFinished(boolean success) {
         if (success) {
-            Toast.makeText(getContext(), "Property was successfully saved", Toast.LENGTH_LONG).show();
-            FragmentFactory.startManagerPropertyListFragment((AppCompatActivity) getActivity());
+            showMessageAndStartManagerFragment(MESSAGE_SUCCESS);
         }
+        else
+            showMessageAndStartManagerFragment(MESSAGE_ERROR);
     }
 
 
     private void createPropertyFromUserInput() {
-        ListingProperty property = new ListingProperty();
-        property.setName(mNameEditText.getText() + "");
-        property.setAddress(mAddressEditText.getText() + "");
-        property.setCity(mCityEditText.getText() + "");
-        property.setState(mStateSpinner.getSelectedItem() + "");
-        property.setZip(mPostalCodeEditText.getText() + "");
-        property.setPropertyType(mPropertyTypeSpinner.getSelectedItem() + "");
-        property.setBedrooms(mBedroomsSpinner.getSelectedItem() + "");
-        property.setBathrooms(mBathroomSpinner.getSelectedItem() + "");
-        property.setPrice(mPriceEditText.getText() + "");
-        property.setPhoneNumber(mPhonenumberEditText.getText() + "");
+        mProperty.setName(mNameEditText.getText() + "");
+        String formattedAddress = mAddressEditText.getText() + "";
+        formattedAddress = Formatter.removeFirebaseInvalidPathChars(formattedAddress);
+        mProperty.setAddress(formattedAddress);
+        mProperty.setCity(mCityEditText.getText() + "");
+        mProperty.setState(mStateSpinner.getSelectedItem() + "");
+        mProperty.setZip(mPostalCodeEditText.getText() + "");
+        mProperty.setPropertyType(mPropertyTypeSpinner.getSelectedItem() + "");
+        mProperty.setBedrooms(mBedroomsSpinner.getSelectedItem() + "");
+        mProperty.setBathrooms(mBathroomSpinner.getSelectedItem() + "");
+        mProperty.setPrice(mPriceEditText.getText() + "");
+        mProperty.setPhoneNumber(mPhonenumberEditText.getText() + "");
 
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         String username = Formatter.convertEmailIntoUserkey(userEmail);
-        property.setManagerUsername(username);
-
-        mProperty = property;
+        mProperty.setManagerUsername(username);
     }
 
 

@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sriley.gobyshankspony.R;
+import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.view.fragments.AddNewPropertyFragment;
 import com.sriley.gobyshankspony.view.fragments.FavoritesFragment;
 import com.sriley.gobyshankspony.view.fragments.ManagerPropertyListFragment;
@@ -25,6 +26,18 @@ public class FragmentFactory {
             FragmentFactory.startSearchResultFragment(activity,1);
         else
             FragmentFactory.startManagerPropertyListFragment(activity);
+    }
+
+
+    public static void startEditPropertyFragment(AppCompatActivity activity, ListingProperty property){
+        AddNewPropertyFragment fragment=new AddNewPropertyFragment();
+
+        String propertyStr=GSONFactory.convertListingPropertyToString(property);
+        Bundle args=new Bundle();
+        args.putString(AddNewPropertyFragment.PROPERTY_ARGS,propertyStr);
+        fragment.setArguments(args);
+
+        beginContentActivityFragmentTransaction(activity,fragment);
     }
 
 

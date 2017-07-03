@@ -25,6 +25,27 @@ public class Formatter {
     public static final String USERTYPE_AGENT="agent";
 
 
+    public static List<String> getRoomNumbersList(){
+        List<String> roomNumbers=new ArrayList<>();
+        roomNumbers.add("0");
+        roomNumbers.add("1");
+        roomNumbers.add("2");
+        roomNumbers.add("3");
+        roomNumbers.add("4");
+        roomNumbers.add("5");
+
+        return roomNumbers;
+    }
+
+
+    public static List<String> getPropertyTypeList(){
+        List<String> properties=new ArrayList<>();
+        properties.add("Rental");
+        properties.add("For Sale");
+
+        return properties;
+    }
+
 
     public static void setupSpinner(List<String> collection, Spinner spinner){
         ArrayAdapter<String> adapter=new ArrayAdapter<>(spinner.getContext(), R.layout.spinner_list_item, collection);
@@ -95,6 +116,14 @@ public class Formatter {
         return address;
     }
 
+
+
+    public static String removeFirebaseInvalidPathChars(String string){
+        String formattedStr=string.replaceAll("\\.","").replaceAll("#","").replaceAll("$","").replaceAll("\\[", "")
+                .replaceAll("]","");
+
+        return formattedStr;
+    }
 
 
 

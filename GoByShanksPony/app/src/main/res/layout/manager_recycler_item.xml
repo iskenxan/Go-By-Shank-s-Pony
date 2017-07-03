@@ -5,15 +5,28 @@
               android:layout_height="wrap_content">
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="30dp"
+            android:paddingTop="10dp"
             android:orientation="vertical"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
+
+            <TextView
+                android:id="@+id/ManagerListItemOptionsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:layout_gravity="right"
+                android:textColor="@android:color/darker_gray"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:text="&#8942;"
+                android:textAppearance="?android:textAppearanceLarge" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -21,9 +34,9 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="100dp"
+                    android:layout_width="80dp"
                     android:layout_marginRight="10dp"
-                    android:layout_height="100dp"
+                    android:layout_height="80dp"
                     android:id="@+id/ManagerListItemImageView"/>
 
                 <LinearLayout
@@ -35,23 +48,26 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_weight="1.4"
+                        android:gravity="center"
+                        android:layout_marginBottom="10dp"
                         android:orientation="horizontal">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Name:"
+                            android:layout_marginRight="4dp"
                             android:textColor="@android:color/black"
-                            android:textSize="17sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:id="@+id/ManagerListItemName"
-                            android:textSize="17sp"
+                            android:textSize="16sp"
                             android:textColor="@android:color/black"
-                            android:text="Ceader Ave Apartments"
+                            android:text="East Gate Apartments"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>
                     <LinearLayout
@@ -63,14 +79,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Addres:"
+                            android:layout_marginRight="4dp"
                             android:textColor="@android:color/black"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:textStyle="bold"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:textSize="13sp"
+                            android:textSize="12sp"
                             android:gravity="center"
                             android:textColor="@android:color/black"
                             android:text="610 N. Lewis Ave Tahlequah,OK,74464"
@@ -80,6 +97,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
+                        android:layout_marginTop="3dp"
                         android:background="@color/light_gray"/>
                 </LinearLayout>
             </LinearLayout>
@@ -88,7 +106,7 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="110dp"
+                android:paddingLeft="90dp"
                 android:layout_height="wrap_content">
 
                 <ImageView

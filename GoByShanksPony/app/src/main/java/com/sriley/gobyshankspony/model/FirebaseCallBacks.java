@@ -17,6 +17,7 @@ import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractManagerListingR
 import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractSinglePropertyListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractPropertiesListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyDeleteListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyPhotoUploadListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyRegisteredListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
@@ -154,17 +155,20 @@ public class FirebaseCallBacks {
     public static class onPropertyRegisteredCallBack implements OnCompleteListener<Void> {
 
         FirebasePropertyRegisteredListener mListener;
+        ListingProperty mProperty;
 
-
-        public onPropertyRegisteredCallBack(FirebasePropertyRegisteredListener listener) {
+        public onPropertyRegisteredCallBack(FirebasePropertyRegisteredListener listener,ListingProperty property) {
             mListener = listener;
+            mProperty=property;
         }
 
 
         @Override
         public void onComplete(@NonNull Task<Void> task) {
-            if (task.isSuccessful())
+            if (task.isSuccessful()){
+                FirebaseManager.addListingToManagerList(mProperty);
                 mListener.onPropertyRegistered(true);
+            }
             else
                 mListener.onPropertyRegistered(false);
         }
@@ -193,8 +197,6 @@ public class FirebaseCallBacks {
         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
             String photoUrl = taskSnapshot.getDownloadUrl().toString();
             FirebaseManager.addPhotoUrlToListing(mProperty, photoUrl);
-            FirebaseManager.addListingToManagerList(mProperty);
-
             mListener.onUploadFinished(true);
         }
 
@@ -217,7 +219,7 @@ public class FirebaseCallBacks {
             if(dataSnapshots.getChildren()!=null){
                 ArrayList<FirebaseManagerListingRecord> listingRecords=new ArrayList<>();
                 for (DataSnapshot dataSnapshot:dataSnapshots.getChildren()){
-                    FirebaseManagerListingRecord listingRecord= (FirebaseManagerListingRecord) dataSnapshot.getValue();
+                    FirebaseManagerListingRecord listingRecord= dataSnapshot.getValue(FirebaseManagerListingRecord.class);
                     listingRecords.add(listingRecord);
                 }
                 mListener.onListingRecordsExtracted(listingRecords);
@@ -245,7 +247,7 @@ public class FirebaseCallBacks {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             if(dataSnapshot.getValue()!=null){
-                ListingProperty property= (ListingProperty) dataSnapshot.getValue();
+                ListingProperty property= dataSnapshot.getValue(ListingProperty.class);
                 mListener.onPropertyExtracted(property);
             }
         }
@@ -254,6 +256,26 @@ public class FirebaseCallBacks {
         @Override
         public void onCancelled(DatabaseError databaseError) {
 
+        }
+    }
+
+
+    public static class onPropertyDeleteCallback implements OnCompleteListener{
+
+        FirebasePropertyDeleteListener mListener;
+
+        public onPropertyDeleteCallback(FirebasePropertyDeleteListener listener){
+            mListener=listener;
+        }
+
+        @Override
+        public void onComplete(@NonNull Task task) {
+            if(mListener!=null){
+                if(task.isSuccessful())
+                    mListener.onPropertyRemoved(true);
+                else
+                    mListener.onPropertyRemoved(false);
+            }
         }
     }
 

@@ -6,18 +6,19 @@ import com.sriley.gobyshankspony.model.ListingProperty;
 
 public class GSONFactory {
 
-    public static String convertVenueToString(ListingProperty listingProperty) {
+    public static String convertListingPropertyToString(ListingProperty listingProperty) {
         Gson gson = new Gson();
         String jsonStr = gson.toJson(listingProperty);
 
         return jsonStr;
     }
 
-    public static ListingProperty convertStringToVenue(String venueStr){
+    public static ListingProperty convertStringToListingProperty(String venueStr){
         Gson gson=new Gson();
         ListingProperty venue=gson.fromJson(venueStr,ListingProperty.class);
 
         return venue;
     }
+
 
 }

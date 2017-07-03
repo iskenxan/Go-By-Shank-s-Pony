@@ -78,7 +78,7 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
 
     private void extractArgs() {
         String propertyStr = getArguments().getString(PROPERTY_ARGS_KEY, "");
-        mListingProperty = GSONFactory.convertStringToVenue(propertyStr);
+        mListingProperty = GSONFactory.convertStringToListingProperty(propertyStr);
 
     }
 

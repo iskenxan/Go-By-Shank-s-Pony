@@ -19,6 +19,7 @@ import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractManagerListingR
 import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractSinglePropertyListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractPropertiesListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyDeleteListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyPhotoUploadListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyRegisteredListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
@@ -31,8 +32,6 @@ public class FirebaseManager {
     public static final String USER_TYPE="userType";
     public static final String PROPERTIES="user_registered_properties";
     public static final String MANAGER_PROPERTIES_LIST="properties_managed";
-
-
     // user's email is used as unique key  for user database objects
 
 
@@ -136,6 +135,16 @@ public class FirebaseManager {
     }
 
 
+    public static void removeListingPropertyFromDatabase(ListingProperty property, FirebasePropertyDeleteListener listener){
+        FirebaseUser currentUser =FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        String userKey = Formatter.convertEmailIntoUserkey(currentUser.getEmail());
+
+        database.child(USERS).child(userKey).child(MANAGER_PROPERTIES_LIST).child(property.getAddress()).removeValue();
+        database.child(PROPERTIES).child(property.getZip()).child(property.getAddress()).removeValue()
+                .addOnCompleteListener(new FirebaseCallBacks.onPropertyDeleteCallback(listener));
+    }
+
 
     public static void addListingToManagerList(ListingProperty property){
         FirebaseManagerListingRecord listingRecord=new FirebaseManagerListingRecord();
@@ -160,7 +169,7 @@ public class FirebaseManager {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
         database.child(PROPERTIES).child(property.getZip()).child(property.getAddress()).setValue(property)
-                .addOnCompleteListener(new FirebaseCallBacks.onPropertyRegisteredCallBack(listener));
+                .addOnCompleteListener(new FirebaseCallBacks.onPropertyRegisteredCallBack(listener,property));
     }
 
 

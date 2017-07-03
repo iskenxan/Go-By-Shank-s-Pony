@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractManagerListingRecordsListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractSinglePropertyListener;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
+import com.sriley.gobyshankspony.view.adapters.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 
@@ -36,7 +38,7 @@ public class ManagerPropertyListFragment extends Fragment implements FirebaseExt
 
 
     ArrayList<FirebaseManagerListingRecord> mListingRecords;
-    ArrayList<ListingProperty> mProperties;
+    ArrayList<ListingProperty> mProperties=new ArrayList<>();
 
 
 
@@ -47,6 +49,7 @@ public class ManagerPropertyListFragment extends Fragment implements FirebaseExt
         ButterKnife.bind(this,view);
         FirebaseManager.getManagedPropertyRecords(this);
         return view;
+        //TODO: Compress images before saving them in a database
     }
 
 
@@ -71,7 +74,6 @@ public class ManagerPropertyListFragment extends Fragment implements FirebaseExt
     }
 
 
-
     @Override
     public void onPropertyExtracted(ListingProperty property) {
         mProperties.add(property);
@@ -82,6 +84,8 @@ public class ManagerPropertyListFragment extends Fragment implements FirebaseExt
     }
 
     private void setupRecyclerView(){
-
+        RecyclerViewAdapter adapter=new RecyclerViewAdapter(mProperties, (AppCompatActivity) getActivity());
+        mManagerListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mManagerListRecyclerView.setAdapter(adapter);
     }
 }

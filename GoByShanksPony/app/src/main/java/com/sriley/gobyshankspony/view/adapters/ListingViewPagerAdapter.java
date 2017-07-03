@@ -47,7 +47,7 @@ public class ListingViewPagerAdapter extends FragmentPagerAdapter {
 
     private void setFragmentArgs(int position,Fragment fragment){
         Bundle args=new Bundle();
-        String venueStr= GSONFactory.convertVenueToString(mProperties.get(position));
+        String venueStr= GSONFactory.convertListingPropertyToString(mProperties.get(position));
         args.putString(SingleSearchResultFragment.PROPERTY_ARGS_KEY,venueStr);
 
         fragment.setArguments(args);
