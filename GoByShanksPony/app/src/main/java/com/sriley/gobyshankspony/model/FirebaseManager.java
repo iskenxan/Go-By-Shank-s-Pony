@@ -1,7 +1,7 @@
 package com.sriley.gobyshankspony.model;
 
 
-import android.net.Uri;
+import android.graphics.Bitmap;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,6 +24,7 @@ import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyPhotoUploadLis
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyRegisteredListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUsertypeListener;
+import com.sriley.gobyshankspony.model.utils.BitmapHandler;
 import com.sriley.gobyshankspony.model.utils.Formatter;
 
 public class FirebaseManager {
@@ -89,13 +90,18 @@ public class FirebaseManager {
         database.child(USERS).child(userKey).setValue(user);
     }
 
+    public static void extractPropertiesFromDatabase(String zip,FirebaseExtractPropertiesListener listener){
+        final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        database.child(PROPERTIES).child(zip).addListenerForSingleValueEvent(new FirebaseCallBacks.onPropertiesExtractCallBack(listener) );
+    }
+
 
     public static void getFavorites(final FirebaseExtractPropertiesListener listener){
         FirebaseUser currentUser =FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         String userKey = Formatter.convertEmailIntoUserkey(currentUser.getEmail());
 
-        database.child(USERS).child(userKey).child(USER_FAVORITES).addValueEventListener(new FirebaseCallBacks.onFavoriteExtractCallBack(listener));
+        database.child(USERS).child(userKey).child(USER_FAVORITES).addValueEventListener(new FirebaseCallBacks.onPropertiesExtractCallBack(listener));
     }
 
 
@@ -106,15 +112,27 @@ public class FirebaseManager {
         String userKey = Formatter.convertEmailIntoUserkey(currentUser.getEmail());
 
         database.child(USERS).child(userKey).child(USER_FAVORITES).child(property.getAddress()).setValue(property)
-                .addOnCompleteListener(new FirebaseCallBacks.onFavoritesAddCallBack(listener));
+                .addOnCompleteListener(new FirebaseCallBacks.onModifyFavoritesCallback(listener));
     }
 
 
 
-    public static void savePropertyPhoto(ListingProperty property, Uri imageFile, FirebasePropertyPhotoUploadListener listener){
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+    public static void deletePropertyFromFavorites(ListingProperty property,FirebaseFavoritesListener listener){
+        FirebaseUser currentUser =FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        String userKey = Formatter.convertEmailIntoUserkey(currentUser.getEmail());
 
-        storageRef.child(property.getZip()).child(property.getAddress()).putFile(imageFile)
+        database.child(USERS).child(userKey).child(USER_FAVORITES).child(property.getAddress()).removeValue()
+                .addOnCompleteListener(new FirebaseCallBacks.onModifyFavoritesCallback(listener));
+    }
+
+
+
+    public static void savePropertyPhoto(ListingProperty property, Bitmap bitmap, FirebasePropertyPhotoUploadListener listener){
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        byte[] bitmapByte= BitmapHandler.convertBitmapToByteArray(bitmap);
+
+        storageRef.child(property.getZip()).child(property.getAddress()).putBytes(bitmapByte)
                 .addOnSuccessListener(new FirebaseCallBacks.onFileUploadCallback(listener,property));
     }
 

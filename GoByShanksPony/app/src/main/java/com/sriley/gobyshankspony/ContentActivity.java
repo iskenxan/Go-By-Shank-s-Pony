@@ -12,6 +12,7 @@ import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.MyPreferenceManager;
 import com.sriley.gobyshankspony.model.PermissionManager;
 import com.sriley.gobyshankspony.model.PhoneCallManager;
+import com.sriley.gobyshankspony.model.interfaces.ExternalFilePermissionListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUsertypeListener;
 import com.sriley.gobyshankspony.model.interfaces.GalleryImageSelectedListener;
@@ -25,6 +26,7 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
 
     LocationPermissionListener mLocationPermissionListener;
     GalleryImageSelectedListener mGalleryImageSelectedListener;
+    ExternalFilePermissionListener mExternalFilePermissionListener;
 
 
     NavigationDrawerManager mDrawerManager;
@@ -36,7 +38,6 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
         setContentView(R.layout.activity_content);
 
         mDrawerManager=new NavigationDrawerManager(this);
-        mDrawerManager.setupDrawer();
 
         FirebaseManager.checkIfNewUser(this);
     }
@@ -69,7 +70,14 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
 
     @Override
     public void onUsertypeExtracted(String usertype) {
-      FragmentFactory.startFragmentBasedOnUserType(usertype,this);
+        FragmentFactory.startFragmentBasedOnUserType(usertype,this);
+        setupDrawer(usertype);
+    }
+
+
+    public void setupDrawer(String usertype){
+
+        mDrawerManager.setupDrawer(usertype);
     }
 
 
@@ -82,6 +90,11 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
     public void setGalleryImageSelectedListener(GalleryImageSelectedListener listener){
         mGalleryImageSelectedListener=listener;
     }
+
+    public void setExternalFilePermissionListener(ExternalFilePermissionListener listener){
+        mExternalFilePermissionListener=listener;
+    }
+
 
 
     @Override
@@ -106,6 +119,9 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
         else if(requestCode==PermissionManager.CALL_PERMISSION_REQUEST){
             handleCallPermissionRequest(grantResults);
         }
+        else if(requestCode==PermissionManager.EXTERNAL_FILE_PERMISSION){
+            handleExternalFilePermission(grantResults);
+        }
 
     }
 
@@ -127,6 +143,15 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
         else
             mLocationPermissionListener.onLocationPermissionResult(false);
     }
+
+
+    private void handleExternalFilePermission(int[] grantResults) {
+        if(PermissionManager.isPermissionGranted(grantResults))
+            mExternalFilePermissionListener.onExternalFilePermissionResult(true);
+        else
+            mExternalFilePermissionListener.onExternalFilePermissionResult(false);
+    }
+
 
 
     @Override

@@ -3,21 +3,26 @@ package com.sriley.gobyshankspony.view.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.squareup.picasso.Picasso;
 import com.sriley.gobyshankspony.R;
+import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.PhoneCallManager;
 import com.sriley.gobyshankspony.model.ScrapeManager;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.PhoneScrapeRequestListener;
+import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.model.utils.GSONFactory;
 import com.sriley.gobyshankspony.view.dialogs.ErrorDialog;
 import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
@@ -28,7 +33,7 @@ import butterknife.OnClick;
 
 
 
-public class SingleFavoriteFragment extends Fragment implements PhoneScrapeRequestListener {
+public class SingleFavoriteFragment extends Fragment implements PhoneScrapeRequestListener, FirebaseFavoritesListener {
 
     public static final String PROPERTY_ARGS_KEY = "property";
 
@@ -60,6 +65,7 @@ public class SingleFavoriteFragment extends Fragment implements PhoneScrapeReque
         View view = inflater.inflate(R.layout.fragment_single_favorite, container, false);
         ButterKnife.bind(this, view);
 
+        mProgressBarDialog=new ProgressBarDialog();
         mWebView=new WebView(getContext());
         extractArgs();
         populateViews();
@@ -95,18 +101,38 @@ public class SingleFavoriteFragment extends Fragment implements PhoneScrapeReque
     }
 
 
+    @OnClick(R.id.favoriteDeleteFabButton)
+    public void onDeleteFabClicked(){
+        FirebaseManager.deletePropertyFromFavorites(mListingProperty,this);
+    }
+
+
+    @Override
+    public void onPropertyAddedToFavorites(boolean success) {
+        if(success){
+            Toast.makeText(getContext(),"Property was successfully removed from your favorites",Toast.LENGTH_LONG).show();
+            FragmentFactory.startFavoritesFragment((AppCompatActivity) getActivity());
+        }
+    }
+
+
     @OnClick(R.id.favoriteCallFabButton)
     public void onCallFabClicked() {
-
         mFabMenu.collapse();
-        mProgressBarDialog=new ProgressBarDialog();
         mProgressBarDialog.show(getFragmentManager(),"progress_bar");
-        ScrapeManager.getPropertyPhone(mWebView,mListingProperty.getDetailsUrl(),this);
+
+        String managerUsername=mListingProperty.getManagerUsername();
+        if(managerUsername==null||managerUsername.equals(""))
+            ScrapeManager.getPropertyPhone(mWebView,mListingProperty.getDetailsUrl(),this);
+        else{
+            mProgressBarDialog.dismiss();
+            PhoneCallManager.callNumber(mListingProperty.getPhoneNumber(),getActivity());
+        }
     }
+
 
     @Override
     public void onPhoneRetrieved(String phone) {
-        mFabMenu.collapse();
         mProgressBarDialog.dismiss();
         if(phone!=null)
             PhoneCallManager.callNumber(phone,getActivity());
@@ -114,4 +140,6 @@ public class SingleFavoriteFragment extends Fragment implements PhoneScrapeReque
             ErrorDialog.displayDialog(getFragmentManager(),ErrorDialog.BROKER_ERROR_MESSAGE+mListingProperty.getBroker());
         }
     }
+
+
 }

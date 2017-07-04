@@ -73,11 +73,11 @@ public class FirebaseCallBacks {
     }
 
 
-    public static class onFavoritesAddCallBack implements OnCompleteListener<Void> {
+    public static class onModifyFavoritesCallback implements OnCompleteListener<Void> {
 
         FirebaseFavoritesListener mListener;
 
-        public onFavoritesAddCallBack(FirebaseFavoritesListener listener) {
+        public onModifyFavoritesCallback(FirebaseFavoritesListener listener) {
             mListener = listener;
         }
 
@@ -92,11 +92,11 @@ public class FirebaseCallBacks {
 
 
 
-    public static class onFavoriteExtractCallBack implements ValueEventListener {
+    public static class onPropertiesExtractCallBack implements ValueEventListener {
         FirebaseExtractPropertiesListener mListener;
 
 
-        public onFavoriteExtractCallBack(FirebaseExtractPropertiesListener listener) {
+        public onPropertiesExtractCallBack(FirebaseExtractPropertiesListener listener) {
             mListener = listener;
         }
 
@@ -104,17 +104,17 @@ public class FirebaseCallBacks {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             Iterable<DataSnapshot> list = dataSnapshot.getChildren();
-            ArrayList<ListingProperty> favorites = new ArrayList<>();
+            ArrayList<ListingProperty> properties = new ArrayList<>();
 
-            addPropertiesToFavorites(list, favorites);
-            mListener.onPropertiesExtracted(favorites);
+            addPropertiesToFavorites(list, properties);
+            mListener.onPropertiesExtracted(properties);
         }
 
 
-        private void addPropertiesToFavorites(Iterable<DataSnapshot> firebaseList, ArrayList<ListingProperty> favorites) {
+        private void addPropertiesToFavorites(Iterable<DataSnapshot> firebaseList, ArrayList<ListingProperty> properties) {
             for (DataSnapshot data : firebaseList) {
                 ListingProperty property = data.getValue(ListingProperty.class);
-                favorites.add(property);
+                properties.add(property);
             }
         }
 

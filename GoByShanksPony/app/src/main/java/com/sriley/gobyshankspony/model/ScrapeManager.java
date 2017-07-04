@@ -35,7 +35,7 @@ public class ScrapeManager  {
 
     private static void scrapePropertyList(final WebView webView, Place place, ListingScrapeRequestListener listener) throws IOException {
         String urlStr = webView.getContext().getResources().getString(R.string.listing_scrape_url);
-        urlStr = urlStr.replaceAll("ZIP", "10017");
+        urlStr = urlStr.replaceAll("ZIP", place.getZip());
         scrapeListingData(webView,urlStr,listener);
     }
 

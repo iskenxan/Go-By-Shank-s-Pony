@@ -41,8 +41,6 @@ public class FavoritesFragment extends Fragment implements FirebaseExtractProper
 
         setActionBarTitle("FAVORITES");
 
-
-
         return view;
     }
 
@@ -51,8 +49,18 @@ public class FavoritesFragment extends Fragment implements FirebaseExtractProper
     public void onPropertiesExtracted(ArrayList<ListingProperty> favorites) {
         mPropertyList=favorites;
         if(favorites.size()>0){
+            handleResult();
+        }
+    }
+
+
+    public  void handleResult(){
+        try {
             mEmptyContainer.setVisibility(View.INVISIBLE);
             setupViewPager();
+        }
+        catch (Exception e){
+            //Some weird exception happens here sometimes
         }
     }
 
@@ -63,8 +71,7 @@ public class FavoritesFragment extends Fragment implements FirebaseExtractProper
         if(mViewPager.getAdapter()!=null)
             mViewPager.getAdapter().notifyDataSetChanged();
         else{
-            ListingViewPagerAdapter adapter=new ListingViewPagerAdapter(getChildFragmentManager(),
-                    mPropertyList,ListingViewPagerAdapter.FRAGMENT_TYPE_FAVORITE);
+            ListingViewPagerAdapter adapter=new ListingViewPagerAdapter(getChildFragmentManager(), mPropertyList,ListingViewPagerAdapter.FRAGMENT_TYPE_FAVORITE);
             mViewPager.setAdapter(adapter);
         }
     }

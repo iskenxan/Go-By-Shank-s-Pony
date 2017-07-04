@@ -24,12 +24,16 @@ public class NavigationDrawerManager implements AdapterView.OnItemClickListener 
     private AppCompatActivity mActivity;
     private ListView mDrawerList;
     private DrawerLayout mDrawerLayout;
+    private String mUserType;
 
 
     public NavigationDrawerManager(AppCompatActivity activity){
         mActivity=activity;
         mDrawerList= (ListView) mActivity.findViewById(R.id.navList);
         mDrawerLayout= (DrawerLayout) mActivity.findViewById(R.id.drawer_layout);
+        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActivity.getSupportActionBar().setHomeButtonEnabled(true);
+        setupDrawerToggle();
     }
 
 
@@ -50,22 +54,21 @@ public class NavigationDrawerManager implements AdapterView.OnItemClickListener 
 
 
     public void syncToggleState(){
-        mDrawerToggle.syncState();
+        if(mDrawerToggle!=null)
+            mDrawerToggle.syncState();
     }
 
 
-    public void setupDrawer(){
+    public void setupDrawer(String userType){
+        mUserType=userType;
         addDrawerItems();
-        setupDrawerToggle();
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mActivity.getSupportActionBar().setHomeButtonEnabled(true);
     }
 
 
 
     private void addDrawerItems() {
-        String[] osArray = { "Home","Favorites","Logout" };
-        mAdapter = new ArrayAdapter<String>(mActivity,android.R.layout.simple_list_item_1,osArray){
+
+        mAdapter = new ArrayAdapter<String>(mActivity,android.R.layout.simple_list_item_1,getMenuArray()){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 TextView textView = (TextView) super.getView(position, convertView, parent);
@@ -78,24 +81,50 @@ public class NavigationDrawerManager implements AdapterView.OnItemClickListener 
     }
 
 
+    private String[] getMenuArray(){
+        String[] menuItems;
+        if(isRenterOrBroker())
+            menuItems=new String[]{ "Search","Favorites","Logout" };
+        else
+            menuItems=new String[]{"Manage Properties","Logout"};
+
+        return menuItems;
+    }
+
+
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         mDrawerLayout.closeDrawers();
         if(position==0){
-            FragmentFactory.startSearchResultFragment(mActivity,1);
+            if(isRenterOrBroker())
+                FragmentFactory.startSearchResultFragment(mActivity,1);
+            else
+                FragmentFactory.startManagerPropertyListFragment(mActivity);
         }
 
         else if(position==1){
-            FragmentFactory.startFavoritesFragment(mActivity);
+            if(isRenterOrBroker())
+                FragmentFactory.startFavoritesFragment(mActivity);
+            else
+                logout();
         }
         else if(position==2){
-            FirebaseAuth.getInstance().signOut();
-            Intent intent=new Intent(mActivity,LoginActivity.class);
-            mActivity.startActivity(intent);
+          logout();
         }
     }
 
+
+    private void logout(){
+        FirebaseAuth.getInstance().signOut();
+        Intent intent=new Intent(mActivity,LoginActivity.class);
+        mActivity.startActivity(intent);
+    }
+
+
+    private boolean isRenterOrBroker(){
+        return mUserType.equals(Formatter.USERTYPE_AGENT)||mUserType.equals(Formatter.USERTYPE_RENTER);
+    }
 
 
 
@@ -103,13 +132,11 @@ public class NavigationDrawerManager implements AdapterView.OnItemClickListener 
     private void setupDrawerToggle() {
         mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
 
-            /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 mActivity.invalidateOptionsMenu();
             }
 
-            /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 mActivity.invalidateOptionsMenu();

@@ -127,6 +127,7 @@ public class JSOUPManager {
             String broker=brokerItem.get(0).text();
             listingProperty.setBroker(broker);
         }
+        listingProperty.setManagerUsername(null);
     }
 
 }

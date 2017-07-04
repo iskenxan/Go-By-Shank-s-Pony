@@ -12,9 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sriley.gobyshankspony.ContentActivity;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
@@ -29,6 +31,7 @@ public class SelectUserTypeFragment extends Fragment {
 
     @BindView(R.id.UserTypeSpinner)Spinner mUserTypeSpinner;
     @BindView(R.id.UserTypeNextButton)Button mNextButton;
+    @BindView(R.id.UserTypeWelcomeText)TextView mWelcomeText;
 
 
     @Nullable
@@ -37,9 +40,11 @@ public class SelectUserTypeFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_select_user_type,container,false);
         ButterKnife.bind(this,view);
         setupUserTypeSpinner();
+        mWelcomeText.setText("Welcome "+Formatter.getUserFirstName()+"!");
 
         return view;
     }
+
 
 
     private void setupUserTypeSpinner(){
@@ -53,6 +58,7 @@ public class SelectUserTypeFragment extends Fragment {
     public void onNextButtonClicked(){
         User user=getUserDetails();
         FirebaseManager.saveUserDetails(user);
+        ((ContentActivity)getActivity()).setupDrawer(user.getUserType());
         FragmentFactory.startFragmentBasedOnUserType(user.getUserType(), (AppCompatActivity) getActivity());
     }
 

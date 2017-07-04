@@ -152,6 +152,16 @@
                 fab:fab_colorPressed="@color/text_color"
                 fab:fab_size="mini"/>
 
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/favoriteDeleteFabButton"
+                fab:fab_icon="@drawable/trash"
+                android:padding="10dp"
+                fab:fab_colorNormal="@color/fab_color"
+                fab:fab_colorPressed="@color/text_color"
+                fab:fab_size="mini"/>
+
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 

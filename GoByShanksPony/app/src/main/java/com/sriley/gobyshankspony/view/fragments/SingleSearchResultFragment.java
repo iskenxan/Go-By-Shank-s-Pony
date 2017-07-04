@@ -104,10 +104,21 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
 
     @OnClick(R.id.callFabButton)
     public void onCallFabClicked() {
-
         mFabMenu.collapse();
         showProgressBar();
-        ScrapeManager.getPropertyPhone(mWebView,mListingProperty.getDetailsUrl(),this);
+        checkIfPropertyManagerIsUser();
+    }
+
+
+    private void checkIfPropertyManagerIsUser(){
+        String managerUsername=mListingProperty.getManagerUsername();
+        if(managerUsername==null||managerUsername.equals(""))
+            ScrapeManager.getPropertyPhone(mWebView,mListingProperty.getDetailsUrl(),this);
+        else{
+            mProgressBarDialog.dismiss();
+            PhoneCallManager.callNumber(mListingProperty.getPhoneNumber(),getActivity());
+        }
+
     }
 
 
@@ -121,7 +132,6 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
 
     @Override
     public void onPhoneRetrieved(String phone) {
-        mFabMenu.collapse();
         mProgressBarDialog.dismiss();
         if(phone!=null)
             PhoneCallManager.callNumber(phone,getActivity());

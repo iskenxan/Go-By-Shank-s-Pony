@@ -8,6 +8,8 @@ import android.location.Location;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.Place;
 import com.sriley.gobyshankspony.model.Venue;
@@ -23,6 +25,16 @@ public class Formatter {
     public static final String USERTYPE_RENTER="renter";
     public static final String USERTYPE_LANDLORD="landlord";
     public static final String USERTYPE_AGENT="agent";
+
+
+
+    public static String getUserFirstName(){
+        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+        String fullName=user.getDisplayName();
+        String firstName=fullName.split(" ")[0];
+
+        return firstName;
+    }
 
 
     public static List<String> getRoomNumbersList(){

@@ -49,7 +49,7 @@ public class ManagerPropertyListFragment extends Fragment implements FirebaseExt
         ButterKnife.bind(this,view);
         FirebaseManager.getManagedPropertyRecords(this);
         return view;
-        //TODO: Compress images before saving them in a database
+
     }
 
 
@@ -79,7 +79,6 @@ public class ManagerPropertyListFragment extends Fragment implements FirebaseExt
         mProperties.add(property);
         if(mProperties.size()==mListingRecords.size()){
             setupRecyclerView();
-            //TODO: implement setupRecyclerView
         }
     }
 

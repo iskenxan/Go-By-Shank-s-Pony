@@ -1,5 +1,6 @@
 package com.sriley.gobyshankspony.view.fragments;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,9 +22,12 @@ import com.sriley.gobyshankspony.ContentActivity;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
+import com.sriley.gobyshankspony.model.PermissionManager;
+import com.sriley.gobyshankspony.model.interfaces.ExternalFilePermissionListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyPhotoUploadListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyRegisteredListener;
 import com.sriley.gobyshankspony.model.interfaces.GalleryImageSelectedListener;
+import com.sriley.gobyshankspony.model.utils.BitmapHandler;
 import com.sriley.gobyshankspony.model.utils.EmptyFieldsChecker;
 import com.sriley.gobyshankspony.model.utils.Formatter;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
@@ -42,7 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class AddNewPropertyFragment extends Fragment implements FirebasePropertyRegisteredListener, GalleryImageSelectedListener, FirebasePropertyPhotoUploadListener {
+public class AddNewPropertyFragment extends Fragment implements FirebasePropertyRegisteredListener, GalleryImageSelectedListener, FirebasePropertyPhotoUploadListener, ExternalFilePermissionListener {
 
     public static final String PROPERTY_ARGS = "property";
     public static final String MESSAGE_ERROR="There was an error saving the property. Please try again.";
@@ -131,6 +135,7 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
     private void addListeners() {
         ContentActivity activity = (ContentActivity) getActivity();
         activity.setGalleryImageSelectedListener(this);
+        activity.setExternalFilePermissionListener(this);
     }
 
 
@@ -145,14 +150,23 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
 
     private void populateViews() {
         Picasso.with(getContext()).load(mProperty.getImageUrl()).into(mImageView);
+        populateTextViews();
+        populateSpinners();
+  }
 
+
+
+    private void populateTextViews(){
         mNameEditText.setText(mProperty.getName());
         mAddressEditText.setText(mProperty.getAddress());
         mCityEditText.setText(mProperty.getCity());
         mPostalCodeEditText.setText(mProperty.getZip());
         mPriceEditText.setText(mProperty.getPrice());
         mPhonenumberEditText.setText(mProperty.getPhoneNumber());
+    }
 
+
+    private void populateSpinners(){
         int stateIndex = mStatesList.indexOf(mProperty.getState());
         int propertyTypeIndex=mPropertyTypeList.indexOf(mProperty.getPropertyType());
         int bedroomNumIndex=mRoomNumbersList.indexOf(mProperty.getBedrooms());
@@ -168,7 +182,17 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
 
     @OnClick(R.id.AddPropertyUploadPhotoButton)
     public void onUploadPhotoButtonClicked() {
-        GalleryBrowser.startGalleryBrowsingIntent(getActivity());
+        if(PermissionManager.isExternalFilePermissionGranted(getActivity()))
+            GalleryBrowser.startGalleryBrowsingIntent(getActivity());
+        else
+            PermissionManager.requestExternalFilePermission(getActivity());
+    }
+
+
+    @Override
+    public void onExternalFilePermissionResult(boolean result) {
+        if(result)
+            GalleryBrowser.startGalleryBrowsingIntent(getActivity());
     }
 
 
@@ -187,20 +211,28 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
     public void onSaveButtonClicked() {
         boolean allFieldsPopulated = EmptyFieldsChecker.areAllFieldsPopulated(mMainContainer);
         if (allFieldsPopulated) {
-            mProgressBarDialog = new ProgressBarDialog();
-            mProgressBarDialog.show(getFragmentManager(), "progress_bar");
-
-            createPropertyFromUserInput();
-            FirebaseManager.registerProperty(mProperty, this);
+          startRegisteringProcess();
         } else
             ErrorDialog.displayDialog(getFragmentManager(), ErrorDialog.EMPTY_FELDS_ERROR_MESSAGE);
     }
 
 
+
+    private void startRegisteringProcess(){
+        mProgressBarDialog = new ProgressBarDialog();
+        mProgressBarDialog.show(getFragmentManager(), "progress_bar");
+
+        createPropertyFromUserInput();
+        FirebaseManager.registerProperty(mProperty, this);
+    }
+
+
     @Override
     public void onPropertyRegistered(boolean success) {
-        if(success&&mNewPhotoUploaded)
-            FirebaseManager.savePropertyPhoto(mProperty, mUploadedImageUri, this);
+        if(success&&mNewPhotoUploaded){
+            Bitmap reducedSizePhoto= BitmapHandler.decodeFile(mUploadedImageUri,getContext());
+            FirebaseManager.savePropertyPhoto(mProperty, reducedSizePhoto, this);
+        }
         else if (success&&!mNewPhotoUploaded)
             showMessageAndStartManagerFragment(MESSAGE_SUCCESS);
         else if(!success)
@@ -245,6 +277,7 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
         String username = Formatter.convertEmailIntoUserkey(userEmail);
         mProperty.setManagerUsername(username);
     }
+
 
 
 }

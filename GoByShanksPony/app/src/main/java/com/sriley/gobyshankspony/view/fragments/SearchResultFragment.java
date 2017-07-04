@@ -16,10 +16,12 @@ import android.widget.Toast;
 
 import com.sriley.gobyshankspony.LoginActivity;
 import com.sriley.gobyshankspony.R;
+import com.sriley.gobyshankspony.model.FirebaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.MyLocationManager;
 import com.sriley.gobyshankspony.model.Place;
 import com.sriley.gobyshankspony.model.ScrapeManager;
+import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractPropertiesListener;
 import com.sriley.gobyshankspony.model.interfaces.ListingScrapeRequestListener;
 import com.sriley.gobyshankspony.model.interfaces.TimerListener;
 import com.sriley.gobyshankspony.model.interfaces.UserLocationListener;
@@ -33,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class SearchResultFragment extends Fragment implements UserLocationListener, ListingScrapeRequestListener,TimerListener {
+public class SearchResultFragment extends Fragment implements UserLocationListener, ListingScrapeRequestListener,TimerListener, FirebaseExtractPropertiesListener {
 
     public static final String APARTMENT_TYPE_ARGS="apartment_type";
 
@@ -79,10 +81,10 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
 
     @Override
     public void onUserLocationDetected(Location location) {
-
         Place place=Formatter.getPlaceFromLocation(getContext(),location);
         mWebView=new WebView(getContext());
         ScrapeManager.getRentalsList(mWebView,place,this);
+        FirebaseManager.extractPropertiesFromDatabase(place.getZip(),this);
     }
 
 
@@ -104,6 +106,11 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
         handleRequestResult(resultProperties);
     }
 
+
+    @Override
+    public void onPropertiesExtracted(ArrayList<ListingProperty> properties) {
+        mPropertyList.addAll(properties);
+    }
 
 
     private void handleRequestResult(final  ArrayList<ListingProperty> resultProperties){
@@ -148,6 +155,7 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
         AppCompatActivity activity= (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setTitle(title);
     }
+
 
 
 }
