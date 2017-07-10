@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,11 @@ import com.sriley.gobyshankspony.ContentActivity;
 import com.sriley.gobyshankspony.LoginActivity;
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.FacebookSignInManager;
-import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.sriley.gobyshankspony.model.FirebaseDatabaseManager;
 import com.sriley.gobyshankspony.model.GoogleSignInManager;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseAuthenticationListener;
 import com.sriley.gobyshankspony.model.interfaces.GoogleSignUpInfoRetrievedListener;
+import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.view.dialogs.ErrorDialog;
 import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
 
@@ -32,7 +34,7 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
 
     private GoogleSignInManager mGoogleSignInManager;
     private FacebookSignInManager mFacebookSignInManager;
-    private ProgressBarDialog mProgressBarDialog;
+    private ProgressBarDialog mProgressBarDialog=new ProgressBarDialog();
 
     @BindView(R.id.SignUpGoogleSignButton)SignInButton mGoogleSignInButton;
     @BindView(R.id.SignUpFacebookSignUpbutton)LoginButton mFacebookSignUpButton;
@@ -64,14 +66,17 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
 
     @Override
     public void onGmailUserInfoRetrieved(GoogleSignInAccount account) {
-        FirebaseManager.signInWithGmail(account.getIdToken(),this);
+        mProgressBarDialog=new ProgressBarDialog();
+        mProgressBarDialog.show(getFragmentManager(),"progress_bar");
+        FirebaseDatabaseManager.signInWithGmail(account.getIdToken(),this);
     }
 
 
     @Override
     public void onAuthenticationComplete(boolean result) {
+        dismissProgressBar();
         if(result)
-            startContentActivity();
+            FragmentFactory.startAppDescriptionFragment((AppCompatActivity) getActivity());
         else{
             ErrorDialog.displayDialog(getFragmentManager(),ErrorDialog.SIGN_IN_ERROR_MESSAGE);
         }
@@ -79,16 +84,12 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
 
 
 
-    private void startContentActivity(){
-        Intent myIntent = new Intent(getActivity(), ContentActivity.class);
-        getActivity().startActivity(myIntent);
-    }
+
 
 
     @Override
     public void onResume() {
         super.onResume();
-        mProgressBarDialog=new ProgressBarDialog();
         mGoogleSignInManager=new GoogleSignInManager(mGoogleSignInButton, (LoginActivity) getActivity(),this,mProgressBarDialog);
 
     }
@@ -99,6 +100,25 @@ public class WelcomePageFragment extends Fragment implements GoogleSignUpInfoRet
         super.onPause();
 
         mGoogleSignInManager.stopGoogleClient();
+    }
+
+
+    private void dismissProgressBar(){
+        try{
+            if(mProgressBarDialog!=null)
+                mProgressBarDialog.dismiss();
+        }
+        catch (Exception e){
+
+        }
+    }
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        dismissProgressBar();
     }
 
 

@@ -3,13 +3,13 @@ package com.sriley.gobyshankspony.model.utils;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.view.fragments.AddNewPropertyFragment;
+import com.sriley.gobyshankspony.view.fragments.AppDescriptionFragment;
 import com.sriley.gobyshankspony.view.fragments.FavoritesFragment;
 import com.sriley.gobyshankspony.view.fragments.ManagerPropertyListFragment;
 import com.sriley.gobyshankspony.view.fragments.SearchResultErrorFragment;
@@ -23,9 +23,15 @@ public class FragmentFactory {
 
     public static void startFragmentBasedOnUserType(String usertype,AppCompatActivity activity){
         if(usertype.equals(Formatter.USERTYPE_RENTER)||usertype.equals(Formatter.USERTYPE_AGENT))
-            FragmentFactory.startSearchResultFragment(activity,1);
+            FragmentFactory.startSearchResultFragment(activity,Formatter.RENTAL);
         else
             FragmentFactory.startManagerPropertyListFragment(activity);
+    }
+
+
+    public static void startAppDescriptionFragment(AppCompatActivity activity){
+        AppDescriptionFragment fragment=new AppDescriptionFragment();
+        beginWelcomeActivityFragmentTransaction(activity,fragment);
     }
 
 
@@ -63,11 +69,11 @@ public class FragmentFactory {
         beginContentActivityFragmentTransaction(activity,fragment);
     }
 
-    public static void startSearchResultFragment(AppCompatActivity activity,int apartmentType){
+    public static void startSearchResultFragment(AppCompatActivity activity,String listingType){
         SearchResultFragment searchResultFragment=new SearchResultFragment();
 
         Bundle args=new Bundle();
-        args.putInt(SearchResultFragment.APARTMENT_TYPE_ARGS,apartmentType);
+        args.putString(SearchResultFragment.LISTING_TYPE,listingType);
         searchResultFragment.setArguments(args);
 
         beginContentActivityFragmentTransaction(activity,searchResultFragment);

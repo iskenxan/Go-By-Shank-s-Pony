@@ -1,5 +1,7 @@
 package com.sriley.gobyshankspony.model;
 
+import com.sriley.gobyshankspony.model.utils.Formatter;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,6 +11,29 @@ import java.util.ArrayList;
 
 
 public class JSOUPManager {
+
+
+    public static ArrayList<String> extractGalleryImageUrls(String htmlStr){
+        ArrayList<String> imageUrls=new ArrayList<>();
+
+        Document doc = Jsoup.parse(htmlStr);
+        Elements galleryItemElements=doc.select(".owl-lazy");
+
+        for (Element container:galleryItemElements){
+            String imageUrl=extractImageUrl(container);
+            imageUrls.add(imageUrl);
+        }
+
+        return imageUrls;
+    }
+
+
+    private static String extractImageUrl(Element imageElement){
+
+        String url=imageElement.attr("data-src");
+
+        return url;
+    }
 
 
     public static String extractPropertyNumber(String htmlStr){
@@ -26,12 +51,12 @@ public class JSOUPManager {
 
 
 
-    public static ArrayList<ListingProperty> extractPropertiesFromHTMLString(String htmlStr) {
+    public static ArrayList<ListingProperty> extractPropertiesFromHTMLString(String htmlStr,String propertyType) {
         ArrayList<ListingProperty> properties = new ArrayList<>();
         Document doc = Jsoup.parse(htmlStr);
-        Elements aparmentListings = doc.select("div.aspect-content");
-        for (int i = 0; i < aparmentListings.size(); i++) {
-            ListingProperty listingProperty = extractSingleProperty(aparmentListings.get(i));
+        Elements apartmentListings = doc.select("div.srp-item");
+        for (int i = 0; i < apartmentListings.size(); i++) {
+            ListingProperty listingProperty = extractSingleProperty(apartmentListings.get(i),propertyType);
             properties.add(listingProperty);
         }
 
@@ -39,11 +64,11 @@ public class JSOUPManager {
     }
 
 
-    private static ListingProperty extractSingleProperty(Element listingElement) {
+    private static ListingProperty extractSingleProperty(Element listingElement,String propertyType) {
         ListingProperty listingProperty = new ListingProperty();
-        getListingName(listingProperty,listingElement);
+        getListingName(listingProperty,listingElement,propertyType);
         getImageUrl(listingProperty,listingElement);
-        getRentPrice(listingElement,listingProperty);
+        getPrice(listingElement,listingProperty,propertyType);
         getAddress(listingElement,listingProperty);
         getMetadata(listingElement,listingProperty);
         getDetailsUrl(listingElement,listingProperty);
@@ -54,15 +79,19 @@ public class JSOUPManager {
     }
 
 
-    private static void getListingName(ListingProperty listingProperty,Element listingElement){
+    private static void getListingName(ListingProperty listingProperty,Element listingElement,String propertyType){
         Elements nameElement = listingElement.select("span.listing-community");
 
         if(nameElement.size()>0){
             String listingName=nameElement.get(0).text();
             listingProperty.setName(listingName);
         }
-        else
-            listingProperty.setName("Property for rent");
+        else{
+            if(propertyType.equals(Formatter.RENTAL))
+                listingProperty.setName("Property for rent");
+            else
+                listingProperty.setName("Property for sale");
+        }
     }
 
 
@@ -74,25 +103,48 @@ public class JSOUPManager {
     }
 
 
-    private static void getRentPrice(Element listingElement,ListingProperty listingProperty){
+    private static void getPrice(Element listingElement, ListingProperty listingProperty, String propertyType){
         Element priceElement = listingElement.select("div.srp-item-price").get(0);
         String price = priceElement.text();
         listingProperty.setPrice(price.replace("/month","").replace("$","").replace(",",""));
+        setPropertyType(propertyType,listingProperty);
+
+        price=listingProperty.getPrice();
+        price=price.replaceAll("No Estimate Available/m","n/a");
+        price=price.replaceAll("No Estimate Available","n/a");
+        listingProperty.setPrice(price);
+    }
+
+
+    
+    private static void setPropertyType(String propertyType,ListingProperty listingProperty){
+        if(propertyType.equals(Formatter.RENTAL)){
+            listingProperty.setPropertyType(Formatter.RENTAL);
+            listingProperty.setPrice(listingProperty.getPrice()+"/m");
+        }
+        else
+            listingProperty.setPropertyType(Formatter.SALE);
     }
 
 
 
     private static void getAddress(Element listingElement,ListingProperty listingProperty){
-        Element addressElement = listingElement.select("span.listing-street-address").get(0);
-        Element cityElement = listingElement.select("span.listing-city").get(0);
-        Element stateElement = listingElement.select("span.listing-region").get(0);
-        String address = addressElement.text();
-        String city = cityElement.text();
-        String state = stateElement.text();
+            Element addressElement = listingElement.select(".listing-street-address").get(0);
+            Element cityElement = listingElement.select(".listing-city").get(0);
+            Element stateElement = listingElement.select(".listing-region").get(0);
+            Element postalElement=listingElement.select(".listing-postal").get(0);
 
-        listingProperty.setAddress(address);
-        listingProperty.setCity(city);
-        listingProperty.setState(state);
+            String address = addressElement.text();
+            address= Formatter.removeFirebaseInvalidPathChars(address);
+
+            String city = cityElement.text();
+            String state = stateElement.text();
+            String postal=postalElement.text();
+
+            listingProperty.setAddress(address);
+            listingProperty.setCity(city);
+            listingProperty.setState(state);
+            listingProperty.setZip(postal);
     }
 
 

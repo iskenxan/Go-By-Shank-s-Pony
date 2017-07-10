@@ -2,6 +2,7 @@ package com.sriley.gobyshankspony.model;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,10 +21,13 @@ import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractPropertiesListe
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyDeleteListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyPhotoUploadListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyRegisteredListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyUserActivityListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUsertypeListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FirebaseCallBacks {
 
@@ -87,6 +91,33 @@ public class FirebaseCallBacks {
                 mListener.onPropertyAddedToFavorites(true);
             else
                 mListener.onPropertyAddedToFavorites(false);
+        }
+    }
+
+    public static class isPropertyInFavoritesCallback implements ValueEventListener{
+
+        ListingProperty mProperty;
+        FirebaseFavoritesListener mListener;
+
+        public isPropertyInFavoritesCallback(ListingProperty property,FirebaseFavoritesListener listener){
+            mProperty=property;
+            mListener=listener;
+        }
+
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if(dataSnapshot.getValue()==null){
+                FirebaseDatabaseManager.savePropertyInFavorites(mProperty,mListener);
+                FirebaseDatabaseManager.updateFavoriteNumForProperty(mProperty,FirebaseDatabaseManager.ACTION_INCREMENT);
+            }
+            else
+                mListener.onPropertyAddedToFavorites(true);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
         }
     }
 
@@ -166,7 +197,7 @@ public class FirebaseCallBacks {
         @Override
         public void onComplete(@NonNull Task<Void> task) {
             if (task.isSuccessful()){
-                FirebaseManager.addListingToManagerList(mProperty);
+                FirebaseDatabaseManager.addListingToManagerList(mProperty);
                 mListener.onPropertyRegistered(true);
             }
             else
@@ -196,7 +227,7 @@ public class FirebaseCallBacks {
         @Override
         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
             String photoUrl = taskSnapshot.getDownloadUrl().toString();
-            FirebaseManager.addPhotoUrlToListing(mProperty, photoUrl);
+            FirebaseDatabaseManager.addPhotoUrlToListing(mProperty, photoUrl);
             mListener.onUploadFinished(true);
         }
 
@@ -276,6 +307,75 @@ public class FirebaseCallBacks {
                 else
                     mListener.onPropertyRemoved(false);
             }
+        }
+    }
+
+
+    public static class onPropertyUserActivityModifyCallback implements ValueEventListener{
+        String mAction;
+        ListingProperty mProperty;
+
+        public onPropertyUserActivityModifyCallback(String action,ListingProperty property){
+            mAction=action;
+            mProperty=property;
+        }
+
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if(dataSnapshot.getValue()!=null){
+                int value=dataSnapshot.getValue(Integer.class);
+                if(mAction.equals(FirebaseDatabaseManager.ACTION_INCREMENT))
+                    value+=1;
+                else
+                    value-=1;
+
+                    dataSnapshot.getRef().setValue(value);
+            }
+            else
+                dataSnapshot.getRef().setValue(1);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            String error=databaseError.getMessage();
+            Log.v("FIREBASE",error);
+        }
+    }
+
+    public static class onGetPropertyUserActivityCallback implements ValueEventListener{
+
+        ListingProperty mProperty;
+        FirebasePropertyUserActivityListener mListener;
+
+
+        public onGetPropertyUserActivityCallback(ListingProperty property,FirebasePropertyUserActivityListener listener){
+            mProperty=property;
+            mListener=listener;
+        }
+
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if(dataSnapshot.getValue()!=null){
+                Map<String,Long> userActivity= (Map<String, Long>) dataSnapshot.getValue();
+                long viewed=userActivity.get("viewed");
+                mProperty.setViewed(viewed);
+                if(userActivity.size()>1){
+                    long inFavorites=userActivity.get("favorites");
+                    mProperty.setInFavorites(inFavorites);
+                }
+            }
+            else{
+                mProperty.setViewed(0);
+                mProperty.setInFavorites(0);
+            }
+            mListener.onUserActivityExtracted(true);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
         }
     }
 

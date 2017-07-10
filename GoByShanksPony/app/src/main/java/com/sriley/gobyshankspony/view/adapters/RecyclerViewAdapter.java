@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.sriley.gobyshankspony.model.FirebaseDatabaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyDeleteListener;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
@@ -55,7 +55,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
     private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, FirebasePropertyDeleteListener {
         TextView mNameTextView;
         TextView mAddressTextView;
-        TextView mOptionsTextView;
+        ImageView mOptionsTextView;
+        TextView mViewedTextView;
+        TextView mInFavoritesTextView;
 
         ImageView mImageView;
 
@@ -67,7 +69,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
             mNameTextView= (TextView) itemView.findViewById(R.id.ManagerListItemName);
             mAddressTextView= (TextView) itemView.findViewById(R.id.ManagerListItemAddress);
             mImageView= (ImageView) itemView.findViewById(R.id.ManagerListItemImageView);
-            mOptionsTextView= (TextView) itemView.findViewById(R.id.ManagerListItemOptionsTextView);
+            mOptionsTextView= (ImageView) itemView.findViewById(R.id.ManagerListItemOptionsImageView);
+            mViewedTextView= (TextView) itemView.findViewById(R.id.ManagerListItemViewed);
+            mInFavoritesTextView= (TextView) itemView.findViewById(R.id.ManagerListItemAddedFavorite);
 
             mOptionsTextView.setOnClickListener(this);
         }
@@ -80,6 +84,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
             mNameTextView.setText(property.getName());
             String fullAddress=property.getAddress()+","+property.getCity()+" "+property.getState();
             mAddressTextView.setText(fullAddress);
+            mViewedTextView.setText(property.getViewed()+"");
+            mInFavoritesTextView.setText(property.getInFavorites()+"");
             loadImage(property);
         }
 
@@ -116,7 +122,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
                     break;
                 }
                 case R.id.ListingMenuDelete:{
-                    FirebaseManager.removeListingPropertyFromDatabase(property,ViewHolder.this);
+                    FirebaseDatabaseManager.removeListingPropertyFromDatabase(property,ViewHolder.this);
                     break;
                 }
 

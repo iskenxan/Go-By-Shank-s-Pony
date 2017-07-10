@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GO BY SHANK\'S PONY</string>
+    <string name="app_name">GO BY SHANKS\' PONY</string>
     <string name="welcome_page_text">Sending instant relevant mobile notifications &amp; details on vacant aparments to quilified prospective tenants &amp; brockers walking by buildings of interest 24/7, even as the landlord sleeps </string>
     <string name="google_server_client_id">1002618696281-f8s17s93m1cpl11fvflr2bfha21q81gj.apps.googleusercontent.com</string>
 
@@ -19,5 +19,6 @@
         name="zillow_request_api_url">http://www.zillow.com/webservice/GetDeepComps.htm?zws-id=X1-ZWz1fvgmd9hs0b_aui2x&amp;zpid=ZIPID&amp;rentzestimate=true&amp;count=3</string>
     <string
         name="zillow_property_details_url">http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm?zws-id=X1-ZWz1fvgmd9hs0b_aui2x&amp;zpid=ZPID</string>
-    <string name="listing_scrape_url">http://www.realtor.com/apartments/ZIP?pgsz=20</string>
+    <string name="rent_listing_scrape_url">http://www.realtor.com/apartments/ZIP?pgsz=20</string>
+    <string name="sale_listing_scrape_url">http://www.realtor.com/realestateandhomes-search/ZIP?pgsz=20</string>
 </resources>

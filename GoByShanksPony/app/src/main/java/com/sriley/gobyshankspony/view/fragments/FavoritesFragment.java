@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.sriley.gobyshankspony.model.FirebaseDatabaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractPropertiesListener;
 import com.sriley.gobyshankspony.model.utils.Formatter;
@@ -37,7 +37,7 @@ public class FavoritesFragment extends Fragment implements FirebaseExtractProper
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_favorites,container,false);
         ButterKnife.bind(this,view);
-        FirebaseManager.getFavorites(this);
+        FirebaseDatabaseManager.getFavorites(this);
 
         setActionBarTitle("FAVORITES");
 

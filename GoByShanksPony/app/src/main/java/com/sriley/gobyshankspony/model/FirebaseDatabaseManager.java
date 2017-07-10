@@ -22,18 +22,30 @@ import com.sriley.gobyshankspony.model.interfaces.FirebaseExtractPropertiesListe
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyDeleteListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyPhotoUploadListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyRegisteredListener;
+import com.sriley.gobyshankspony.model.interfaces.FirebasePropertyUserActivityListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUserCheckListener;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseUsertypeListener;
 import com.sriley.gobyshankspony.model.utils.BitmapHandler;
 import com.sriley.gobyshankspony.model.utils.Formatter;
 
-public class FirebaseManager {
+import java.util.ArrayList;
+
+public class FirebaseDatabaseManager {
     public static final String USERS = "users";
     public static final String USER_FAVORITES="favorites";
     public static final String USER_TYPE="userType";
     public static final String PROPERTIES="user_registered_properties";
     public static final String MANAGER_PROPERTIES_LIST="properties_managed";
+    public static final String USER_ACTVITY="user_activity";
+    public static final String USER_ACTIVITY_VIEWED="viewed";
+    public static final String USER_ACTIVITY_FAVORITES="favorites";
+
+
     // user's email is used as unique key  for user database objects
+
+    public static final String ACTION_INCREMENT="inrement";
+    public static final String ACTION_DECREMENT="decrement";
+
 
 
 
@@ -183,12 +195,62 @@ public class FirebaseManager {
         database.child(PROPERTIES).child(property.getZip()).child(property.getAddress()).child("imageUrl").setValue(photoUrl);
     }
 
+
+
     public static void registerProperty(ListingProperty property, FirebasePropertyRegisteredListener listener){
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
         database.child(PROPERTIES).child(property.getZip()).child(property.getAddress()).setValue(property)
                 .addOnCompleteListener(new FirebaseCallBacks.onPropertyRegisteredCallBack(listener,property));
     }
+
+
+    public static void addViewsToProperties(ArrayList<ListingProperty> properties){
+        for (ListingProperty property:properties){
+            updateViewNumForProperty(property,FirebaseDatabaseManager.ACTION_INCREMENT);
+        }
+    }
+
+
+
+    public static void updateViewNumForProperty(ListingProperty property,String action){
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+            database.child(USER_ACTVITY).child(property.getZip()).child(property.getAddress()).child(USER_ACTIVITY_VIEWED)
+                    .addListenerForSingleValueEvent(new FirebaseCallBacks.onPropertyUserActivityModifyCallback(action,property));
+
+    }
+
+
+    public static void checkIfInFavoritesAndAdd(ListingProperty listingProperty,FirebaseFavoritesListener listener){
+        FirebaseUser currentUser =FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        String userKey = Formatter.convertEmailIntoUserkey(currentUser.getEmail());
+
+        database.child(USERS).child(userKey).child(USER_FAVORITES).child(listingProperty.getAddress())
+                .addListenerForSingleValueEvent(new FirebaseCallBacks.isPropertyInFavoritesCallback(listingProperty,listener));
+    }
+
+
+    public static void updateFavoriteNumForProperty(ListingProperty property, String action){
+        try {
+            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+            database.child(USER_ACTVITY).child(property.getZip()).child(property.getAddress()).child(USER_ACTIVITY_FAVORITES)
+                    .addListenerForSingleValueEvent(new FirebaseCallBacks.onPropertyUserActivityModifyCallback(action,property));
+        }
+        catch (Exception e  ){
+
+        }
+    }
+
+
+    public static void getPropertyViewedAndFavorites(ListingProperty property, FirebasePropertyUserActivityListener listener){
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        database.child(USER_ACTVITY).child(property.getZip()).child(property.getAddress())
+                .addListenerForSingleValueEvent(new FirebaseCallBacks.onGetPropertyUserActivityCallback(property, listener));
+    }
+
+
+
 
 
 }

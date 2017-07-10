@@ -75,8 +75,9 @@ public class GoogleSignInManager implements GoogleApiClient.OnConnectionFailedLi
 
     @Override
     public void onClick(View view) {
+        mProgressBarDialog=new ProgressBarDialog();
         mProgressBarDialog.show(mActivity.getSupportFragmentManager(),"progress_bar_dialog");
-        FirebaseManager.SignOutGmail(mGoogleApiClient);
+        FirebaseDatabaseManager.SignOutGmail(mGoogleApiClient);
         startSignInIntent();
     }
 

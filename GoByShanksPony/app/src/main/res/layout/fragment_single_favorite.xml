@@ -44,13 +44,13 @@
                         android:layout_width="match_parent"
                         android:layout_marginTop="15dp"
                         android:gravity="center"
-                        android:paddingLeft="40dp"
+                        android:paddingLeft="20dp"
                         android:layout_marginBottom="15dp"
-                        android:paddingRight="40dp"
+                        android:paddingRight="20dp"
                         android:layout_height="30dp">
                         <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_weight="1"
+                            android:layout_weight="1.5"
                             android:gravity="center"
                             android:layout_height="wrap_content">
                             <ImageView
@@ -63,7 +63,6 @@
                                 android:textSize="24sp"
                                 android:text="2500"
                                 android:textColor="@color/text_color_price"
-                                android:gravity="center"
                                 android:id="@+id/SingleFavoriteRentTextView"
                                 android:layout_weight="1"/>
                         </LinearLayout>
@@ -86,7 +85,8 @@
                                 android:textColor="@color/text_color_price"
                                 android:gravity="center"
                                 android:textSize="24sp"
-                                android:id="@+id/SingleFavoriteBathroomsTextView"/>
+                                android:id="@+id/SingleFavoriteBedroomsTextView"
+/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -106,11 +106,24 @@
                                 android:textColor="@color/text_color_price"
                                 android:gravity="center"
                                 android:textSize="24sp"
-                                android:id="@+id/SingleFavoriteBedroomsTextView"/>
+                                android:id="@+id/SingleFavoriteBathroomsTextView"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
+
+
+            <Button
+                android:layout_width="100dp"
+                android:text="View gallery"
+                android:textSize="10sp"
+                android:textColor="@color/text_color_gallery_btn"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:id="@+id/SingleFavoritesGalleryButton"
+                android:layout_height="25dp"
+                android:background="@drawable/action_button_white"/>
+
 
             <TextView
                 android:layout_width="match_parent"

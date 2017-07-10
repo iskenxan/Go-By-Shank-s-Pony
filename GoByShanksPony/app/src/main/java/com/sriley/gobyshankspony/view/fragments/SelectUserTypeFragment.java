@@ -1,7 +1,6 @@
 package com.sriley.gobyshankspony.view.fragments;
 
 
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -18,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sriley.gobyshankspony.ContentActivity;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.sriley.gobyshankspony.model.FirebaseDatabaseManager;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.model.User;
 import com.sriley.gobyshankspony.model.utils.Formatter;
@@ -57,7 +55,7 @@ public class SelectUserTypeFragment extends Fragment {
     @OnClick(R.id.UserTypeNextButton)
     public void onNextButtonClicked(){
         User user=getUserDetails();
-        FirebaseManager.saveUserDetails(user);
+        FirebaseDatabaseManager.saveUserDetails(user);
         ((ContentActivity)getActivity()).setupDrawer(user.getUserType());
         FragmentFactory.startFragmentBasedOnUserType(user.getUserType(), (AppCompatActivity) getActivity());
     }

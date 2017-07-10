@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sriley.gobyshankspony.R;
+import com.sriley.gobyshankspony.model.utils.Formatter;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 
 import butterknife.ButterKnife;
@@ -30,6 +31,6 @@ public class SearchResultErrorFragment extends Fragment {
 
     @OnClick(R.id.errorReloadButton)
     public void onReloadButtonClicked(){
-        FragmentFactory.startSearchResultFragment((AppCompatActivity) getActivity(),1);
+        FragmentFactory.startSearchResultFragment((AppCompatActivity) getActivity(), Formatter.RENTAL);
     }
 }

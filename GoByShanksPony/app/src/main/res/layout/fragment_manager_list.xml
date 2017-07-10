@@ -25,6 +25,16 @@
         android:layout_weight="1"/>
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        android:id="@+id/ManagerListEmptyTextView"
+        android:text="You haven't created any listings yet. You can add a new listing by clicking on the red button"
+        android:layout_height="match_parent"/>
+
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/ManagerListFabMenu"
         android:layout_width="wrap_content"

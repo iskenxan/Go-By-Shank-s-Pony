@@ -84,7 +84,7 @@ public class NavigationDrawerManager implements AdapterView.OnItemClickListener 
     private String[] getMenuArray(){
         String[] menuItems;
         if(isRenterOrBroker())
-            menuItems=new String[]{ "Search","Favorites","Logout" };
+            menuItems=new String[]{ "Rentals","For Sale","Favorites","Logout" };
         else
             menuItems=new String[]{"Manage Properties","Logout"};
 
@@ -98,19 +98,22 @@ public class NavigationDrawerManager implements AdapterView.OnItemClickListener 
         mDrawerLayout.closeDrawers();
         if(position==0){
             if(isRenterOrBroker())
-                FragmentFactory.startSearchResultFragment(mActivity,1);
+                FragmentFactory.startSearchResultFragment(mActivity,Formatter.RENTAL);
             else
                 FragmentFactory.startManagerPropertyListFragment(mActivity);
         }
 
         else if(position==1){
             if(isRenterOrBroker())
-                FragmentFactory.startFavoritesFragment(mActivity);
+                FragmentFactory.startSearchResultFragment(mActivity,Formatter.SALE);
             else
                 logout();
         }
         else if(position==2){
-          logout();
+            FragmentFactory.startFavoritesFragment(mActivity);
+        }
+        else if(position==3){
+            logout();
         }
     }
 

@@ -13,7 +13,25 @@ public class ListingProperty extends Place {
     private String managerUsername="";
     private String propertyType;
     private String phoneNumber;
+    private long viewed;
+    private long inFavorites;
 
+
+    public long getViewed() {
+        return viewed;
+    }
+
+    public void setViewed(long viewed) {
+        this.viewed = viewed;
+    }
+
+    public long getInFavorites() {
+        return inFavorites;
+    }
+
+    public void setInFavorites(long inFavorites) {
+        this.inFavorites = inFavorites;
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;

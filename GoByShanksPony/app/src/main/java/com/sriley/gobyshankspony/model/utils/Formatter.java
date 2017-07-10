@@ -25,7 +25,8 @@ public class Formatter {
     public static final String USERTYPE_RENTER="renter";
     public static final String USERTYPE_LANDLORD="landlord";
     public static final String USERTYPE_AGENT="agent";
-
+    public static final String RENTAL="Rental";
+    public static final String SALE="For Sale";
 
 
     public static String getUserFirstName(){
@@ -52,8 +53,8 @@ public class Formatter {
 
     public static List<String> getPropertyTypeList(){
         List<String> properties=new ArrayList<>();
-        properties.add("Rental");
-        properties.add("For Sale");
+        properties.add(RENTAL);
+        properties.add(SALE);
 
         return properties;
     }
@@ -131,8 +132,8 @@ public class Formatter {
 
 
     public static String removeFirebaseInvalidPathChars(String string){
-        String formattedStr=string.replaceAll("\\.","").replaceAll("#","").replaceAll("$","").replaceAll("\\[", "")
-                .replaceAll("]","");
+        String formattedStr=string.replaceAll("\\.","").replaceAll("#"," ").replaceAll("$","").replaceAll("\\[", "")
+                .replaceAll("]","").replaceAll("/","-").replaceAll("\\\\","");
 
         return formattedStr;
     }

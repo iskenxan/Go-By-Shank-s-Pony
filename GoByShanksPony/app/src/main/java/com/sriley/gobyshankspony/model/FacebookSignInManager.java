@@ -70,9 +70,8 @@ public class FacebookSignInManager implements FacebookCallback<LoginResult> {
 
 
     private void handleFacebookAccessToken(AccessToken token) {
-        mProgressBarDialog=new ProgressBarDialog();
         mProgressBarDialog.show(mFragment.getFragmentManager(),"progress_bar");
-        FirebaseManager.signInWithFacebook(token.getToken(), (FirebaseAuthenticationListener) mFragment);
+        FirebaseDatabaseManager.signInWithFacebook(token.getToken(), (FirebaseAuthenticationListener) mFragment);
     }
 
 

@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 import com.sriley.gobyshankspony.ContentActivity;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.sriley.gobyshankspony.model.FirebaseDatabaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.PermissionManager;
 import com.sriley.gobyshankspony.model.interfaces.ExternalFilePermissionListener;
@@ -83,6 +83,7 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
     @BindView(R.id.AddPropertyMainContainer)
     LinearLayout mMainContainer;
 
+    Bitmap mReducedSizePhoto;
     Uri mUploadedImageUri;
     ListingProperty mProperty=new ListingProperty();
     ProgressBarDialog mProgressBarDialog;
@@ -126,7 +127,7 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
             String propertyStr = getArguments().getString(PROPERTY_ARGS, null);
             ListingProperty property = GSONFactory.convertStringToListingProperty(propertyStr);
             mProperty = property;
-            FirebaseManager.removeListingPropertyFromDatabase(property,null);
+            FirebaseDatabaseManager.removeListingPropertyFromDatabase(property,null);
             populateViews();
         }
     }
@@ -200,7 +201,10 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
     public void onImageSelected(Uri imageUri) {
         if (imageUri != null) {
             mUploadedImageUri = imageUri;
-            mImageView.setImageURI(mUploadedImageUri);
+
+            mReducedSizePhoto= BitmapHandler.decodeFile(mUploadedImageUri,getContext());
+
+            mImageView.setImageBitmap(mReducedSizePhoto);
             mNewPhotoUploaded=true;
         }
     }
@@ -223,15 +227,15 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
         mProgressBarDialog.show(getFragmentManager(), "progress_bar");
 
         createPropertyFromUserInput();
-        FirebaseManager.registerProperty(mProperty, this);
+        FirebaseDatabaseManager.registerProperty(mProperty, this);
     }
 
 
     @Override
     public void onPropertyRegistered(boolean success) {
         if(success&&mNewPhotoUploaded){
-            Bitmap reducedSizePhoto= BitmapHandler.decodeFile(mUploadedImageUri,getContext());
-            FirebaseManager.savePropertyPhoto(mProperty, reducedSizePhoto, this);
+
+            FirebaseDatabaseManager.savePropertyPhoto(mProperty, mReducedSizePhoto, this);
         }
         else if (success&&!mNewPhotoUploaded)
             showMessageAndStartManagerFragment(MESSAGE_SUCCESS);
@@ -270,7 +274,10 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
         mProperty.setPropertyType(mPropertyTypeSpinner.getSelectedItem() + "");
         mProperty.setBedrooms(mBedroomsSpinner.getSelectedItem() + "");
         mProperty.setBathrooms(mBathroomSpinner.getSelectedItem() + "");
+
         mProperty.setPrice(mPriceEditText.getText() + "");
+        if(mProperty.getPropertyType().equals(Formatter.RENTAL))
+            mProperty.setPrice(mProperty.getPrice()+"/m");
         mProperty.setPhoneNumber(mPhonenumberEditText.getText() + "");
 
         String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
@@ -279,5 +286,16 @@ public class AddNewPropertyFragment extends Fragment implements FirebaseProperty
     }
 
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            if(mProgressBarDialog!=null)
+                mProgressBarDialog.dismiss();
+        }
+        catch (Exception e  ){
 
+        }
+
+    }
 }

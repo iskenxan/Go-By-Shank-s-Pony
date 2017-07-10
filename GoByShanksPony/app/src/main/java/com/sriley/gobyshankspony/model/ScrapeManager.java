@@ -5,10 +5,13 @@ import android.webkit.WebView;
 
 import com.sriley.gobyshankspony.R;
 import com.sriley.gobyshankspony.model.HTMLViewers.HTMLViewer;
-import com.sriley.gobyshankspony.model.HTMLViewers.ListingHTMLViewer;
+import com.sriley.gobyshankspony.model.HTMLViewers.PropertyGalleryHTMLViewer;
+import com.sriley.gobyshankspony.model.HTMLViewers.RentalListingHTMLViewer;
 import com.sriley.gobyshankspony.model.HTMLViewers.PhoneHTMLViewer;
+import com.sriley.gobyshankspony.model.HTMLViewers.SaleListingHTMLViewer;
 import com.sriley.gobyshankspony.model.interfaces.ListingScrapeRequestListener;
 import com.sriley.gobyshankspony.model.interfaces.PhoneScrapeRequestListener;
+import com.sriley.gobyshankspony.model.interfaces.PropertyImageListRequestListener;
 
 import java.io.IOException;
 
@@ -17,42 +20,36 @@ public class ScrapeManager  {
 
 
     public static void getRentalsList(WebView  webView, Place place, ListingScrapeRequestListener listener) {
-        try {
-            scrapePropertyList(webView, place,listener);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            String rentalScrapeUrl=webView.getContext().getResources().getString(R.string.rent_listing_scrape_url);
+            RentalListingHTMLViewer htmlViewer=new RentalListingHTMLViewer(listener);
+            scrapePropertyList(webView, place,rentalScrapeUrl,htmlViewer);
     }
+
+
+
+    public static void getSalesList(WebView webView,Place place,ListingScrapeRequestListener listener){
+            String rentalScrapeUrl=webView.getContext().getResources().getString(R.string.sale_listing_scrape_url);
+            SaleListingHTMLViewer htmlViewer=new SaleListingHTMLViewer(listener);
+            scrapePropertyList(webView, place,rentalScrapeUrl,htmlViewer);
+    }
+
 
     public static void getPropertyPhone(final  WebView webView, String detailsUrl, PhoneScrapeRequestListener listener){
-        try {
-            scrapePhoneNumberData(webView,detailsUrl,listener);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private static void scrapePropertyList(final WebView webView, Place place, ListingScrapeRequestListener listener) throws IOException {
-        String urlStr = webView.getContext().getResources().getString(R.string.listing_scrape_url);
-        urlStr = urlStr.replaceAll("ZIP", place.getZip());
-        scrapeListingData(webView,urlStr,listener);
-    }
-
-
-
-
-
-    private static void scrapeListingData(final WebView webView, String urlStr, ListingScrapeRequestListener listener) throws IOException {
-        ListingHTMLViewer jInterface = new ListingHTMLViewer(listener);
-        runWebview(jInterface,webView,urlStr);
-    }
-
-
-
-    private static void scrapePhoneNumberData(final WebView webView, String urlStr, PhoneScrapeRequestListener listener) throws IOException {
         PhoneHTMLViewer jInterface = new PhoneHTMLViewer(listener);
-       runWebview(jInterface,webView,urlStr);
+        runWebview(jInterface,webView,detailsUrl);
+    }
+
+
+    public static void getPropertyImageList(WebView webView,String detailsUrl,PropertyImageListRequestListener listener){
+        PropertyGalleryHTMLViewer htmlViewer=new PropertyGalleryHTMLViewer(listener);
+        runWebview(htmlViewer,webView,detailsUrl);
+    }
+
+
+    private static void scrapePropertyList(final WebView webView, Place place,String requestUrl, HTMLViewer htmlViewer){
+        String urlStr = requestUrl;
+        urlStr = urlStr.replaceAll("ZIP", place.getZip());
+        runWebview(htmlViewer,webView,urlStr);
     }
 
 

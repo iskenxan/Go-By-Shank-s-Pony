@@ -33,9 +33,10 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:spinnerMode="dropdown"
-            android:background="@drawable/spinner_bg"
-            android:padding="10dp"
-            android:layout_height="45dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="5dp"
+            android:layout_height="40dp"
             android:id="@+id/UserTypeSpinner"/>
     </LinearLayout>
 

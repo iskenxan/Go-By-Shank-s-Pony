@@ -8,7 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.sriley.gobyshankspony.model.FirebaseDatabaseManager;
 import com.sriley.gobyshankspony.model.MyPreferenceManager;
 import com.sriley.gobyshankspony.model.PermissionManager;
 import com.sriley.gobyshankspony.model.PhoneCallManager;
@@ -23,6 +24,8 @@ import com.sriley.gobyshankspony.model.utils.GalleryBrowser;
 import com.sriley.gobyshankspony.model.utils.NavigationDrawerManager;
 
 public class ContentActivity extends AppCompatActivity implements FirebaseUserCheckListener, FirebaseUsertypeListener {
+
+
 
     LocationPermissionListener mLocationPermissionListener;
     GalleryImageSelectedListener mGalleryImageSelectedListener;
@@ -39,7 +42,7 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
 
         mDrawerManager=new NavigationDrawerManager(this);
 
-        FirebaseManager.checkIfNewUser(this);
+        FirebaseDatabaseManager.checkIfNewUser(this);
     }
 
 
@@ -64,7 +67,7 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
 
 
     private void getUserTypeAndStartFragment(){
-        FirebaseManager.getUsertype(this);
+        FirebaseDatabaseManager.getUsertype(this);
     }
 
 
@@ -173,6 +176,7 @@ public class ContentActivity extends AppCompatActivity implements FirebaseUserCh
     public void onBackPressed() {
         //Do nothing
     }
+
 
 
 }

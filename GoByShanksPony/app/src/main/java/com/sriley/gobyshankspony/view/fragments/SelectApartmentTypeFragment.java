@@ -46,6 +46,6 @@ public class SelectApartmentTypeFragment extends Fragment {
     @OnClick(R.id.searchApartmentButton)
     public void onSearchButtonClicked(){
         int selectedApartmentType=mViewPager.getCurrentItem()+1;
-        FragmentFactory.startSearchResultFragment((AppCompatActivity) getActivity(),selectedApartmentType);
+      //  FragmentFactory.startSearchResultFragment((AppCompatActivity) getActivity(),selectedApartmentType);
     }
 }

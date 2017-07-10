@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,22 +18,27 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.squareup.picasso.Picasso;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.sriley.gobyshankspony.model.FirebaseDatabaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.PhoneCallManager;
 import com.sriley.gobyshankspony.model.ScrapeManager;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.PhoneScrapeRequestListener;
+import com.sriley.gobyshankspony.model.interfaces.PropertyImageListRequestListener;
+import com.sriley.gobyshankspony.model.utils.Formatter;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.model.utils.GSONFactory;
 import com.sriley.gobyshankspony.view.dialogs.ErrorDialog;
+import com.sriley.gobyshankspony.view.dialogs.GalleryDialog;
 import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SingleSearchResultFragment extends Fragment implements FirebaseFavoritesListener, PhoneScrapeRequestListener {
+public class SingleSearchResultFragment extends Fragment implements FirebaseFavoritesListener, PhoneScrapeRequestListener, PropertyImageListRequestListener {
 
     public static final String PROPERTY_ARGS_KEY = "property";
 
@@ -53,9 +59,9 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
     FloatingActionButton mCallFab;
     @BindView(R.id.favoritesFabButton)
     FloatingActionButton mFavoritesFab;
-    @BindView(R.id.refreshFabButton)
-    FloatingActionButton mRefreshFab;
     @BindView(R.id.fabMenu)FloatingActionsMenu mFabMenu;
+    @BindView(R.id.SingleSearchResultGalleryButton)Button mGalleryButton;
+
 
     ListingProperty mListingProperty;
     ProgressBarDialog mProgressBarDialog;
@@ -79,11 +85,12 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
     private void extractArgs() {
         String propertyStr = getArguments().getString(PROPERTY_ARGS_KEY, "");
         mListingProperty = GSONFactory.convertStringToListingProperty(propertyStr);
-
     }
 
 
     private void populateViews() {
+        if(!mListingProperty.getManagerUsername().equals(""))
+            mGalleryButton.setVisibility(View.INVISIBLE);
         mNameTextView.setText(mListingProperty.getName());
         mAddressTextView.setText(mListingProperty.getAddress() + ", " + mListingProperty.getCity() + ", " + mListingProperty.getState());
         mBedroomsTextView.setText(mListingProperty.getBedrooms());
@@ -118,7 +125,6 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
             mProgressBarDialog.dismiss();
             PhoneCallManager.callNumber(mListingProperty.getPhoneNumber(),getActivity());
         }
-
     }
 
 
@@ -154,7 +160,7 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
     @OnClick(R.id.favoritesFabButton)
     public void onFavoritesFabClicked() {
         mFabMenu.collapse();
-        FirebaseManager.savePropertyInFavorites(mListingProperty, this);
+        FirebaseDatabaseManager.checkIfInFavoritesAndAdd(mListingProperty,this);
     }
 
 
@@ -168,11 +174,36 @@ public class SingleSearchResultFragment extends Fragment implements FirebaseFavo
     }
 
 
-    @OnClick(R.id.refreshFabButton)
-    public void onRefreshFabClicked() {
-        FragmentFactory.startSearchResultFragment((AppCompatActivity) getActivity(), 1);
+
+    @OnClick(R.id.SingleSearchResultGalleryButton)
+    public void onGalleryButtonClicked(){
+        showProgressBar();
+        ScrapeManager.getPropertyImageList(mWebView,mListingProperty.getDetailsUrl(),this);
     }
 
 
+    @OnClick(R.id.SingleSearchResultRefreshButton)
+    public void onRefreshButtonClicked() {
+        FragmentFactory.startSearchResultFragment((AppCompatActivity) getActivity(),mListingProperty.getPropertyType());
+    }
 
+
+    @Override
+    public void onImageUrlsExtracted(ArrayList<String> imageUrls) {
+        mProgressBarDialog.dismiss();
+        GalleryDialog.displayDialog(getFragmentManager(),imageUrls);
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        try{
+            if(mProgressBarDialog!=null)
+                mProgressBarDialog.dismiss();
+        }
+        catch (Exception e){
+
+        }
+    }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,16 +17,20 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.squareup.picasso.Picasso;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.sriley.gobyshankspony.model.FirebaseDatabaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.PhoneCallManager;
 import com.sriley.gobyshankspony.model.ScrapeManager;
 import com.sriley.gobyshankspony.model.interfaces.FirebaseFavoritesListener;
 import com.sriley.gobyshankspony.model.interfaces.PhoneScrapeRequestListener;
+import com.sriley.gobyshankspony.model.interfaces.PropertyImageListRequestListener;
 import com.sriley.gobyshankspony.model.utils.FragmentFactory;
 import com.sriley.gobyshankspony.model.utils.GSONFactory;
 import com.sriley.gobyshankspony.view.dialogs.ErrorDialog;
+import com.sriley.gobyshankspony.view.dialogs.GalleryDialog;
 import com.sriley.gobyshankspony.view.dialogs.ProgressBarDialog;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +38,7 @@ import butterknife.OnClick;
 
 
 
-public class SingleFavoriteFragment extends Fragment implements PhoneScrapeRequestListener, FirebaseFavoritesListener {
+public class SingleFavoriteFragment extends Fragment implements PhoneScrapeRequestListener, FirebaseFavoritesListener, PropertyImageListRequestListener {
 
     public static final String PROPERTY_ARGS_KEY = "property";
 
@@ -52,7 +57,7 @@ public class SingleFavoriteFragment extends Fragment implements PhoneScrapeReque
     @BindView(R.id.favoriteCallFabButton)
     FloatingActionButton mCallFab;
     @BindView(R.id.FavoritefabMenu)FloatingActionsMenu mFabMenu;
-
+    @BindView(R.id.SingleFavoritesGalleryButton)Button mGalleryButton;
 
     ListingProperty mListingProperty;
     ProgressBarDialog mProgressBarDialog;
@@ -83,6 +88,8 @@ public class SingleFavoriteFragment extends Fragment implements PhoneScrapeReque
 
 
     private void populateViews() {
+        if(!mListingProperty.getManagerUsername().equals(""))
+            mGalleryButton.setVisibility(View.INVISIBLE);
         mNameTextView.setText(mListingProperty.getName());
         mAddressTextView.setText(mListingProperty.getAddress() + ", " + mListingProperty.getCity() + ", " + mListingProperty.getState());
         mBedroomsTextView.setText(mListingProperty.getBedrooms());
@@ -94,22 +101,26 @@ public class SingleFavoriteFragment extends Fragment implements PhoneScrapeReque
 
 
     private void loadImage(String imageUrl) {
-        if (imageUrl.contains(".svg"))
-            Picasso.with(getContext()).load(R.drawable.image_not_available).resize(400, 300).centerCrop().into(mImageView);
-        else
-            Picasso.with(getContext()).load(imageUrl).resize(400, 300).centerCrop().into(mImageView);
+        if(imageUrl!=null)
+        {
+            if (imageUrl.contains(".svg"))
+                Picasso.with(getContext()).load(R.drawable.image_not_available).resize(400, 300).centerCrop().into(mImageView);
+            else
+                Picasso.with(getContext()).load(imageUrl).resize(400, 300).centerCrop().into(mImageView);
+        }
     }
 
 
     @OnClick(R.id.favoriteDeleteFabButton)
     public void onDeleteFabClicked(){
-        FirebaseManager.deletePropertyFromFavorites(mListingProperty,this);
+        FirebaseDatabaseManager.deletePropertyFromFavorites(mListingProperty,this);
+        FirebaseDatabaseManager.updateFavoriteNumForProperty(mListingProperty,FirebaseDatabaseManager.ACTION_DECREMENT);
     }
 
 
     @Override
-    public void onPropertyAddedToFavorites(boolean success) {
-        if(success){
+    public void onPropertyAddedToFavorites(boolean sucess) {
+        if(sucess){
             Toast.makeText(getContext(),"Property was successfully removed from your favorites",Toast.LENGTH_LONG).show();
             FragmentFactory.startFavoritesFragment((AppCompatActivity) getActivity());
         }
@@ -142,4 +153,38 @@ public class SingleFavoriteFragment extends Fragment implements PhoneScrapeReque
     }
 
 
+    @OnClick(R.id.SingleFavoritesGalleryButton)
+    public void onGalleryButtonClicked(){
+        showProgressBar();
+        ScrapeManager.getPropertyImageList(mWebView,mListingProperty.getDetailsUrl(),this);
+    }
+
+
+
+    private void showProgressBar(){
+        mProgressBarDialog=new ProgressBarDialog();
+        mProgressBarDialog.show(getFragmentManager(),"progress_bar");
+    }
+
+
+
+    @Override
+    public void onImageUrlsExtracted(ArrayList<String> imageUrls) {
+        mProgressBarDialog.dismiss();
+        GalleryDialog.displayDialog(getFragmentManager(),imageUrls);
+    }
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        try{
+            if(mProgressBarDialog!=null)
+                mProgressBarDialog.dismiss();
+        }
+        catch (Exception e){
+
+        }
+    }
 }

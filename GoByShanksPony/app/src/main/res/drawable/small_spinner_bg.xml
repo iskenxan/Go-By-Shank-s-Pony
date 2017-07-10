@@ -10,8 +10,8 @@
             <solid android:color="#ffffff" />
         </shape>
     </item>
-    <item android:width="13dp" android:height="6dp" android:top="20dp" android:bottom="15dp" android:right="10dp"
-          android:left="140dp"
+    <item  android:top="15dp" android:bottom="20dp" android:right="25dp"
+          android:left="135dp"
           android:drawable="@drawable/spinner_arrow">
     </item>
 

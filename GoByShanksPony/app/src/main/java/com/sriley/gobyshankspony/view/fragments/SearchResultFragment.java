@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.sriley.gobyshankspony.LoginActivity;
 import com.sriley.gobyshankspony.R;
-import com.sriley.gobyshankspony.model.FirebaseManager;
+import com.sriley.gobyshankspony.model.FirebaseDatabaseManager;
 import com.sriley.gobyshankspony.model.ListingProperty;
 import com.sriley.gobyshankspony.model.MyLocationManager;
 import com.sriley.gobyshankspony.model.Place;
@@ -37,12 +37,12 @@ import butterknife.ButterKnife;
 
 public class SearchResultFragment extends Fragment implements UserLocationListener, ListingScrapeRequestListener,TimerListener, FirebaseExtractPropertiesListener {
 
-    public static final String APARTMENT_TYPE_ARGS="apartment_type";
+    public static final String LISTING_TYPE ="listing_type";
 
     @BindView(R.id.searchResultViewPager)ViewPager mViewPager;
     @BindView(R.id.searchResultLoadingImageContainer)LinearLayout mLoadingImageContainer;
     boolean timeOut=true;
-
+    String mListingType;
 
 
     MyLocationManager mMyLocationManager;
@@ -58,10 +58,21 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
 
         mMyLocationManager=new MyLocationManager(getActivity(),this);
         checkIfLocationServiceOn();
-        setActionBarTitle("GO BY SHANK'S PONY");
+        setActionBarTitle("GO BY SHANKS' PONY");
+        getArgs();
+
 
         return view;
     }
+
+
+
+
+    private void getArgs(){
+        String listingType=getArguments().getString(LISTING_TYPE,Formatter.RENTAL);
+        mListingType=listingType;
+    }
+
 
 
 
@@ -78,14 +89,23 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
 
 
 
-
     @Override
     public void onUserLocationDetected(Location location) {
         Place place=Formatter.getPlaceFromLocation(getContext(),location);
         mWebView=new WebView(getContext());
-        ScrapeManager.getRentalsList(mWebView,place,this);
-        FirebaseManager.extractPropertiesFromDatabase(place.getZip(),this);
+        scrapeData(place);
+
+        FirebaseDatabaseManager.extractPropertiesFromDatabase(place.getZip(),this);
     }
+
+
+    private void scrapeData(Place place){
+        if(mListingType.equals(Formatter.RENTAL))
+            ScrapeManager.getRentalsList(mWebView,place,this);
+        else
+            ScrapeManager.getSalesList(mWebView,place,this);
+    }
+
 
 
     @Override
@@ -109,13 +129,17 @@ public class SearchResultFragment extends Fragment implements UserLocationListen
 
     @Override
     public void onPropertiesExtracted(ArrayList<ListingProperty> properties) {
-        mPropertyList.addAll(properties);
+        for (ListingProperty property:properties){
+            if(property.getPropertyType().equals(mListingType))
+                mPropertyList.add(property);
+        }
     }
 
 
     private void handleRequestResult(final  ArrayList<ListingProperty> resultProperties){
         if(resultProperties!=null){
             mPropertyList.addAll(resultProperties);
+            FirebaseDatabaseManager.addViewsToProperties(mPropertyList);
             getActivity().runOnUiThread(setupViewPagerRunnable);
         }
     }

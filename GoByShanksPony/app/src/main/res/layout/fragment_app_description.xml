@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:paddingLeft="15dp"
+              android:paddingRight="15dp"
+                android:background="@drawable/bg">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_weight="2.5">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:src="@drawable/map_marker"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:text="Walk, run, drive, uber, go by bus or train around town and get instant mobile notifications on vacancies for rent or sale 24/7, even as the landlord sleeps!"
+            android:id="@+id/textView3"/>
+    </LinearLayout>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="1">
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:id="@+id/AppDescriptionFragmentButton"
+            android:text="got it!"
+            android:textColor="@android:color/white"
+            android:background="@drawable/action_button_light"/>
+    </LinearLayout>
+
+</LinearLayout>
